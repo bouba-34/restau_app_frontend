@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="client.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:auth="clr-namespace:Client.Views.Auth"
+    xmlns:menu="clr-namespace:Client.Views.Menu"
+    xmlns:order="clr-namespace:Client.Views.Order"
+    xmlns:reservation="clr-namespace:Client.Views.Reservation"
+    xmlns:notification="clr-namespace:Client.Views.Notification"
+    xmlns:settings="clr-namespace:Client.Views.Settings"
+    FlyoutBackgroundColor="{StaticResource Primary}"
+    FlyoutHeaderBehavior="CollapseOnScroll"
+    Title="Restaurant App">
+
+    <Shell.FlyoutHeader>
+        <Grid BackgroundColor="{StaticResource Primary}" HeightRequest="200">
+            <Image Source="restaurant_logo.png" Aspect="AspectFit" Margin="20" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <ShellContent
+        Title="Login"
+        Icon="&#xf2f6;"
+        ContentTemplate="{DataTemplate auth:LoginPage}"
+        Route="LoginPage" 
+        FlyoutItemIsVisible="{Binding IsNotLoggedIn}"/>
+
+    <ShellContent
+        Title="Register"
+        Icon="&#xf234;"
+        ContentTemplate="{DataTemplate auth:RegisterPage}"
+        Route="RegisterPage"
+        FlyoutItemIsVisible="{Binding IsNotLoggedIn}"/>
+
+    <FlyoutItem Title="Menu" Icon="&#xf0f5;" Route="MenuPage" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+        <ShellContent ContentTemplate="{DataTemplate menu:MenuPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Cart" Icon="&#xf07a;" Route="CartPage" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+        <ShellContent ContentTemplate="{DataTemplate order:CartPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="My Orders" Icon="&#xf218;" Route="OrdersPage" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+        <ShellContent ContentTemplate="{DataTemplate order:OrderHistoryPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Reservations" Icon="&#xf274;" Route="ReservationsPage" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+        <ShellContent ContentTemplate="{DataTemplate reservation:ReservationPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Notifications" Icon="&#xf0f3;" Route="NotificationsPage" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+        <ShellContent ContentTemplate="{DataTemplate notification:NotificationPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Profile" Icon="&#xf007;" Route="ProfilePage" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+        <ShellContent ContentTemplate="{DataTemplate auth:ProfilePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings" Icon="&#xf013;" Route="SettingsPage" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+        <ShellContent ContentTemplate="{DataTemplate settings:SettingsPage}" />
+    </FlyoutItem>
+
+    <MenuItem 
+        Text="Logout" 
+        IconImageSource="&#xf2f5;" 
+        Command="{Binding LogoutCommand}"
+        IsVisible="{Binding IsLoggedIn}"/>
+
+</Shell>

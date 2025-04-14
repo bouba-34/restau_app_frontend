@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Client.ViewModels.Menu"
+             xmlns:models="clr-namespace:Shared.Models.Menu;assembly=Restaurant.Shared"
+             x:Class="Client.Views.Menu.MenuPage"
+             Title="{Binding Title}">
+
+    <ContentPage.BindingContext>
+        <vm:MenuViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Search Bar -->
+        <SearchBar Grid.Row="0" Placeholder="Search for food items..." 
+                   Text="{Binding SearchQuery}" 
+                   SearchCommand="{Binding SearchCommand}"
+                   Margin="10,5"
+                   MinimumHeightRequest="40" />
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshDataCommand}">
+            <ScrollView>
+                <StackLayout Padding="10">
+                    <!-- Search Results -->
+                    <StackLayout IsVisible="{Binding IsSearching}">
+                        <Label Text="Search Results" FontSize="20" FontAttributes="Bold" Margin="0,10" />
+                        
+                        <StackLayout IsVisible="{Binding SearchResults.Count, Converter={StaticResource CountToInverseBoolConverter}}">
+                            <Label Text="No items found matching your search." 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   Margin="0,20" />
+                        </StackLayout>
+                        
+                        <CollectionView ItemsSource="{Binding SearchResults}" 
+                                        SelectionMode="None"
+                                        HeightRequest="{Binding SearchResults.Count, Converter={StaticResource CountToHeightConverter}, ConverterParameter=120}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:MenuItem">
+                                    <Grid Padding="5" Margin="0,5">
+                                        <Frame CornerRadius="10" HasShadow="True" BorderColor="#EEEEEE">
+                                            <Grid ColumnDefinitions="Auto,*" Padding="5">
+                                                <!-- Item Image -->
+                                                <Image Grid.Column="0" 
+                                                       Source="{Binding ImageUrl}" 
+                                                       Aspect="AspectFill" 
+                                                       HeightRequest="100" 
+                                                       WidthRequest="100"
+                                                       VerticalOptions="Center"
+                                                       Margin="0,0,10,0">
+                                                    <Image.Clip>
+                                                        <RoundRectangleGeometry Rect="0,0,100,100" CornerRadius="10" />
+                                                    </Image.Clip>
+                                                </Image>
+                                                
+                                                <!-- Item Details -->
+                                                <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="5">
+                                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                                    <Label Text="{Binding Description}" MaxLines="2" LineBreakMode="TailTruncation" FontSize="14" TextColor="#666666" />
+                                                    
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                                            <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                                                            <Label Text="{Binding CategoryName}" FontSize="12" TextColor="#999999" VerticalOptions="Center" />
+                                                        </StackLayout>
+                                                        
+                                                        <Button Grid.Column="1" 
+                                                                Text="View" 
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MenuViewModel}}, Path=ViewItemCommand}" 
+                                                                CommandParameter="{Binding .}"
+                                                                HeightRequest="35"
+                                                                WidthRequest="80"
+                                                                CornerRadius="20"
+                                                                FontSize="12"
+                                                                BackgroundColor="{StaticResource Primary}"
+                                                                TextColor="White" />
+                                                    </Grid>
+                                                </StackLayout>
+                                            </Grid>
+                                        </Frame>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                        
+                        <Button Text="Clear Search" 
+                                Command="{Binding ClearSearchCommand}" 
+                                BackgroundColor="Transparent" 
+                                TextColor="{StaticResource Primary}"
+                                Margin="0,10" />
+                    </StackLayout>
+                    
+                    <!-- Normal Menu View -->
+                    <StackLayout IsVisible="{Binding IsSearching, Converter={StaticResource InverseBoolConverter}}">
+                        <!-- Featured Items -->
+                        <Label Text="Featured Items" FontSize="20" FontAttributes="Bold" Margin="0,10,0,5" />
+                        
+                        <StackLayout IsVisible="{Binding FeaturedItems.Count, Converter={StaticResource CountToInverseBoolConverter}}">
+                            <Label Text="No featured items available." 
+                                   HorizontalOptions="Center" 
+                                   Margin="0,10" />
+                        </StackLayout>
+                        
+                        <CollectionView ItemsSource="{Binding FeaturedItems}" 
+                                        HeightRequest="200" 
+                                        SelectionMode="None"
+                                        ItemsLayout="HorizontalList">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:MenuItem">
+                                    <Grid Padding="5" WidthRequest="180">
+                                        <Frame CornerRadius="10" HasShadow="True" BorderColor="#EEEEEE">
+                                            <Grid RowDefinitions="120,*" Padding="5">
+                                                <!-- Item Image -->
+                                                <Image Grid.Row="0" 
+                                                       Source="{Binding ImageUrl}" 
+                                                       Aspect="AspectFill" 
+                                                       HeightRequest="120">
+                                                    <Image.Clip>
+                                                        <RoundRectangleGeometry Rect="0,0,170,120" CornerRadius="10" />
+                                                    </Image.Clip>
+                                                </Image>
+                                                
+                                                <!-- Item Details -->
+                                                <StackLayout Grid.Row="1" Spacing="2" Margin="0,5,0,0">
+                                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" MaxLines="1" LineBreakMode="TailTruncation" />
+                                                    <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="14" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                                                    
+                                                    <!-- View Button -->
+                                                    <Button Text="View" 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MenuViewModel}}, Path=ViewItemCommand}" 
+                                                            CommandParameter="{Binding .}"
+                                                            HeightRequest="35"
+                                                            WidthRequest="80"
+                                                            CornerRadius="20"
+                                                            FontSize="12"
+                                                            Margin="0,5,0,0"
+                                                            BackgroundColor="{StaticResource Primary}"
+                                                            TextColor="White"
+                                                            HorizontalOptions="Start" />
+                                                </StackLayout>
+                                            </Grid>
+                                        </Frame>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                        
+                        <!-- Menu Categories -->
+                        <Label Text="Menu Categories" FontSize="20" FontAttributes="Bold" Margin="0,20,0,5" />
+                        
+                        <StackLayout IsVisible="{Binding Categories.Count, Converter={StaticResource CountToInverseBoolConverter}}">
+                            <Label Text="No menu categories available." 
+                                   HorizontalOptions="Center" 
+                                   Margin="0,10" />
+                        </StackLayout>
+                        
+                        <CollectionView ItemsSource="{Binding Categories}" 
+                                        SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:MenuCategory">
+                                    <Grid Padding="5" Margin="0,5">
+                                        <Frame CornerRadius="10" HasShadow="True" BorderColor="#EEEEEE">
+                                            <Grid ColumnDefinitions="Auto,*" Padding="5">
+                                                <!-- Category Image -->
+                                                <Image Grid.Column="0" 
+                                                       Source="{Binding ImageUrl}" 
+                                                       Aspect="AspectFill" 
+                                                       HeightRequest="80" 
+                                                       WidthRequest="80">
+                                                    <Image.Clip>
+                                                        <RoundRectangleGeometry Rect="0,0,80,80" CornerRadius="10" />
+                                                    </Image.Clip>
+                                                </Image>
+                                                
+                                                <!-- Category Details -->
+                                                <StackLayout Grid.Column="1" VerticalOptions="Center" Margin="10,0,0,0">
+                                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                                    <Label Text="{Binding Description}" MaxLines="2" LineBreakMode="TailTruncation" FontSize="14" TextColor="#666666" />
+                                                    
+                                                    <!-- Browse Button -->
+                                                    <Button Text="Browse" 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MenuViewModel}}, Path=ViewCategoryCommand}" 
+                                                            CommandParameter="{Binding .}"
+                                                            HeightRequest="35"
+                                                            WidthRequest="80"
+                                                            CornerRadius="20"
+                                                            FontSize="12"
+                                                            Margin="0,5,0,0"
+                                                            BackgroundColor="{StaticResource Primary}"
+                                                            TextColor="White"
+                                                            HorizontalOptions="Start" />
+                                                </StackLayout>
+                                            </Grid>
+                                        </Frame>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </StackLayout>
+            </ScrollView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

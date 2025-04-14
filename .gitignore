@@ -1,0 +1,71 @@
+# Ignore les binaires et fichiers de compilation
+bin/
+obj/
+out/
+
+# Fichiers de build MAUI
+*.user
+*.userosscache
+*.suo
+*.tlog
+*.pdb
+*.cache
+*.ilk
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.tmp_proj
+*.bak
+*.ncb
+*.svclog
+*.DS_Store
+*.sln.docstates
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Fichiers générés par MAUI
+*.db
+*.apk
+*.aab
+*.app
+*.ipa
+*.xcuserstate
+*.xcworkspace
+*.xcuserdatad
+
+# MAUI image tools
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.bmp
+
+# Configuration de test et rapports
+TestResults/
+*.coverage
+*.coveragexml
+*.code-coverage
+*.trx
+
+# Dépendances locales
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# MacOS
+*.DS_Store
+
+# Windows thumbnail cache
+Thumbs.db
+
+# Logs
+*.log
+logs/
