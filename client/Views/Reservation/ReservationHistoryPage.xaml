@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Client.ViewModels.Reservation"
+             xmlns:models="clr-namespace:Shared.Models.Reservation;assembly=Shared"
+             x:Class="Client.Views.Reservation.ReservationHistoryPage"
+             Title="{Binding Title}">
+    
+
+    <Grid RowDefinitions="Auto,*">
+        <Picker Grid.Row="0" 
+               ItemsSource="{Binding FilterOptions}" 
+               SelectedItem="{Binding FilterStatus}"
+               Title="Filter reservations"
+               Margin="20,10" />
+        
+        <RefreshView Grid.Row="1" 
+                    IsRefreshing="{Binding IsRefreshing}" 
+                    Command="{Binding RefreshCommand}">
+            <Grid RowDefinitions="Auto,*">
+                <!-- Upcoming Reservation Banner -->
+                <Frame Grid.Row="0" 
+                      BackgroundColor="{StaticResource Primary}" 
+                      CornerRadius="10"
+                      Margin="15,0,15,15"
+                      Padding="15"
+                      IsVisible="{Binding HasUpcomingReservation}">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                        <StackLayout Grid.Row="0" Grid.Column="0">
+                            <Label Text="Upcoming Reservation" 
+                                  TextColor="White" 
+                                  FontSize="18" 
+                                  FontAttributes="Bold" />
+                            <Label Text="{Binding UpcomingReservation.ReservationDate, StringFormat='{0:D}'}" 
+                                  TextColor="White" 
+                                  FontSize="14" />
+                            <Label Text="{Binding UpcomingReservation.ReservationTime, StringFormat='at {0:t}'}" 
+                                  TextColor="White" 
+                                  FontSize="14" />
+                        </StackLayout>
+                        
+                        <Frame Grid.Row="0" Grid.Column="1" 
+                              BackgroundColor="White" 
+                              Padding="8,4" 
+                              CornerRadius="8"
+                              VerticalOptions="Start">
+                            <Label Text="{Binding UpcomingReservation.Status}" 
+                                  TextColor="{StaticResource Primary}" 
+                                  FontSize="12" 
+                                  FontAttributes="Bold" />
+                        </Frame>
+                        
+                        <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                               Text="View Reservation Details"
+                               Command="{Binding ViewReservationDetailCommand}"
+                               CommandParameter="{Binding UpcomingReservation}"
+                               BackgroundColor="White"
+                               TextColor="{StaticResource Primary}"
+                               CornerRadius="20"
+                               Margin="0,10,0,0" />
+                    </Grid>
+                </Frame>
+                
+                <ScrollView Grid.Row="1">
+                    <StackLayout>
+                        <!-- Empty State -->
+                        <StackLayout IsVisible="{Binding IsEmpty}" 
+                                     VerticalOptions="CenterAndExpand" 
+                                     HorizontalOptions="CenterAndExpand" 
+                                     Padding="20" 
+                                     Margin="0,50,0,0">
+                            <Image Source="empty_reservations.png" 
+                                   HeightRequest="100" 
+                                   WidthRequest="100" />
+                            <Label Text="No reservations found" 
+                                   HorizontalOptions="Center" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   Margin="0,20,0,0" />
+                            <Label Text="When you make reservations, they will appear here" 
+                                   HorizontalOptions="Center" 
+                                   TextColor="#666666" />
+                            <Button Text="Make a Reservation" 
+                                    Command="{Binding MakeNewReservationCommand}" 
+                                    BackgroundColor="{StaticResource Primary}" 
+                                    TextColor="White" 
+                                    CornerRadius="20" 
+                                    Margin="0,20" />
+                        </StackLayout>
+
+                        <!-- Reservation List -->
+                        <CollectionView ItemsSource="{Binding Reservations}" 
+                                        SelectionMode="None"
+                                        Margin="15"
+                                        IsVisible="{Binding IsEmpty, Converter={StaticResource InverseBoolConverter}}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Reservation">
+                                    <Grid Padding="5" Margin="0,5">
+                                        <Frame BorderColor="{StaticResource Gray200}" 
+                                               CornerRadius="10" 
+                                               HasShadow="True" 
+                                               Padding="15">
+                                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                                <!-- Reservation Info -->
+                                                <StackLayout Grid.Row="0" Grid.Column="0">
+                                                    <Label Text="{Binding ReservationDate, StringFormat='{0:D}'}" 
+                                                           FontSize="16" 
+                                                           FontAttributes="Bold" />
+                                                    <Label Text="{Binding ReservationTime, StringFormat='at {0:t}'}" 
+                                                           FontSize="14" 
+                                                           TextColor="#666666" />
+                                                    <Label Text="{Binding PartySize, StringFormat='Party of {0}'}" 
+                                                           FontSize="14" 
+                                                           TextColor="#666666" />
+                                                    <Label Text="{Binding TableNumber, StringFormat='Table: {0}'}" 
+                                                           FontSize="14" 
+                                                           TextColor="#666666"
+                                                           IsVisible="{Binding TableNumber, Converter={StaticResource StringToBoolConverter}}" />
+                                                </StackLayout>
+
+                                                <!-- Reservation Status -->
+                                                <Frame Grid.Row="0" Grid.Column="1" 
+                                                       Padding="8,4" 
+                                                       CornerRadius="8"
+                                                       BackgroundColor="{Binding Status, Converter={StaticResource ReservationStatusToColorConverter}}"
+                                                       VerticalOptions="Start">
+                                                    <Label Text="{Binding Status}" 
+                                                           TextColor="White" 
+                                                           FontSize="12" 
+                                                           FontAttributes="Bold" />
+                                                </Frame>
+
+                                                <!-- View Details Button -->
+                                                <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                        Text="View Details"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ReservationHistoryViewModel}}, Path=ViewReservationDetailCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        BackgroundColor="Transparent"
+                                                        TextColor="{StaticResource Primary}"
+                                                        BorderColor="{StaticResource Primary}"
+                                                        BorderWidth="1"
+                                                        CornerRadius="20"
+                                                        Margin="0,10,0,0" />
+                                            </Grid>
+                                        </Frame>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </ScrollView>
+
+            </Grid>
+        </RefreshView>
+    </Grid>
+</ContentPage>

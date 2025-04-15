@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Client.ViewModels.Notification"
+             xmlns:models="clr-namespace:Shared.Models.Notification;assembly=Shared"
+             x:Class="Client.Views.Notification.NotificationPage"
+             Title="{Binding Title}">
+    
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="10">
+            <Picker Grid.Column="0" 
+                   ItemsSource="{Binding NotificationTypeOptions}" 
+                   SelectedItem="{Binding SelectedFilter}"
+                   Title="Filter by type"
+                   IsEnabled="{Binding IsFilteringEnabled}" />
+            
+            <Switch Grid.Column="1" 
+                   IsToggled="{Binding IsFilteringEnabled}" 
+                   OnColor="{StaticResource Primary}" />
+        </Grid>
+        
+        <Grid Grid.Row="1" RowDefinitions="Auto,*">
+            <!-- Unread Notifications Section -->
+            <StackLayout Grid.Row="0" IsVisible="{Binding HasUnreadNotifications}">
+                <Label Text="New Notifications" 
+                      FontSize="18" 
+                      FontAttributes="Bold" 
+                      Margin="20,10,20,5" />
+                
+                <CollectionView ItemsSource="{Binding UnreadNotifications}" 
+                              SelectionMode="None"
+                              HeightRequest="{Binding UnreadNotifications.Count, Converter={StaticResource CountToHeightConverter}, ConverterParameter=110}"
+                              Margin="10,0,10,10">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Notification">
+                            <Grid Padding="5" Margin="0,5">
+                                <Frame BorderColor="{StaticResource Primary}" 
+                                      CornerRadius="10" 
+                                      HasShadow="True" 
+                                      Padding="15">
+                                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                        <!-- Title -->
+                                        <Label Grid.Row="0" Grid.Column="0"
+                                              Text="{Binding Title}" 
+                                              FontSize="16" 
+                                              FontAttributes="Bold" />
+                                        
+                                        <!-- Type Badge -->
+                                        <Frame Grid.Row="0" Grid.Column="1"
+                                              BackgroundColor="{StaticResource Accent}" 
+                                              Padding="5,2" 
+                                              CornerRadius="10" 
+                                              HasShadow="False">
+                                            <Label Text="{Binding Type}" 
+                                                  TextColor="White" 
+                                                  FontSize="10" 
+                                                  FontAttributes="Bold" />
+                                        </Frame>
+                                        
+                                        <!-- Message -->
+                                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                              Text="{Binding Message}" 
+                                              FontSize="14" 
+                                              TextColor="#444444"
+                                              Margin="0,5,0,5" />
+                                        
+                                        <!-- Time & Actions -->
+                                        <Label Grid.Row="2" Grid.Column="0"
+                                              Text="{Binding CreatedAt, StringFormat='{0:g}'}" 
+                                              FontSize="12" 
+                                              TextColor="#666666" 
+                                              VerticalOptions="Center" />
+                                        
+                                        <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="10">
+                                            <Button Text="Mark Read" 
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationViewModel}}, Path=MarkAsReadCommand}" 
+                                                   CommandParameter="{Binding .}"
+                                                   FontSize="12"
+                                                   HeightRequest="30"
+                                                   BackgroundColor="Transparent"
+                                                   TextColor="{StaticResource Primary}" />
+                                            
+                                            <Button Text="Delete" 
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationViewModel}}, Path=DeleteNotificationCommand}" 
+                                                   CommandParameter="{Binding .}"
+                                                   FontSize="12"
+                                                   HeightRequest="30"
+                                                   BackgroundColor="Transparent"
+                                                   TextColor="{StaticResource Error}" />
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+            
+            <!-- All Notifications Section -->
+            <RefreshView Grid.Row="1" 
+                        IsRefreshing="{Binding IsRefreshing}" 
+                        Command="{Binding RefreshCommand}">
+                <Grid RowDefinitions="Auto,*">
+                    <StackLayout Grid.Row="0" 
+                                Orientation="Horizontal" 
+                                Margin="20,10,20,0"
+                                IsVisible="{Binding HasNotifications}">
+                        <Label Text="All Notifications" 
+                              FontSize="18" 
+                              FontAttributes="Bold"
+                              VerticalOptions="Center" />
+                        
+                        <Button Text="Mark All Read" 
+                              Command="{Binding MarkAllAsReadCommand}"
+                              HorizontalOptions="EndAndExpand"
+                              FontSize="14"
+                              BackgroundColor="Transparent"
+                              TextColor="{StaticResource Primary}"
+                              IsVisible="{Binding HasUnreadNotifications}" />
+                    </StackLayout>
+                    
+                    <ScrollView Grid.Row="1">
+                        <StackLayout>
+                            <!-- Empty State -->
+                            <StackLayout IsVisible="{Binding HasNotifications, Converter={StaticResource InverseBoolConverter}}" 
+                                         VerticalOptions="CenterAndExpand" 
+                                         HorizontalOptions="CenterAndExpand" 
+                                         Padding="20" 
+                                         Margin="0,50,0,0">
+                                <Image Source="empty_notification.png" 
+                                       HeightRequest="100" 
+                                       WidthRequest="100" />
+                                <Label Text="No notifications yet" 
+                                       HorizontalOptions="Center" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       Margin="0,20,0,0" />
+                                <Label Text="When you receive notifications, they will appear here" 
+                                       HorizontalOptions="Center" 
+                                       TextColor="#666666" />
+                            </StackLayout>
+
+                            <!-- Notifications List -->
+                            <CollectionView ItemsSource="{Binding Notifications}" 
+                                            SelectionMode="None"
+                                            Margin="10"
+                                            IsVisible="{Binding HasNotifications}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Notification">
+                                        <Grid Padding="5" Margin="0,5">
+                                            <Frame BorderColor="{StaticResource Gray200}" 
+                                                   CornerRadius="10" 
+                                                   HasShadow="True" 
+                                                   Padding="15"
+                                                   Opacity="{Binding IsRead, Converter={StaticResource BoolToValueConverter}, ConverterParameter='0.7,1'}">
+                                                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                                    <!-- Title -->
+                                                    <Label Grid.Row="0" Grid.Column="0"
+                                                           Text="{Binding Title}" 
+                                                           FontSize="16" 
+                                                           FontAttributes="Bold" />
+                                                    
+                                                    <!-- Type Badge -->
+                                                    <Frame Grid.Row="0" Grid.Column="1"
+                                                           BackgroundColor="#9E9E9E" 
+                                                           Padding="5,2" 
+                                                           CornerRadius="10" 
+                                                           HasShadow="False">
+                                                        <Label Text="{Binding Type}" 
+                                                               TextColor="White" 
+                                                               FontSize="10" 
+                                                               FontAttributes="Bold" />
+                                                    </Frame>
+                                                    
+                                                    <!-- Message -->
+                                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                           Text="{Binding Message}" 
+                                                           FontSize="14" 
+                                                           TextColor="#444444"
+                                                           Margin="0,5,0,5" />
+                                                    
+                                                    <!-- Time & Actions -->
+                                                    <Label Grid.Row="2" Grid.Column="0"
+                                                           Text="{Binding CreatedAt, StringFormat='{0:g}'}" 
+                                                           FontSize="12" 
+                                                           TextColor="#666666" 
+                                                           VerticalOptions="Center" />
+                                                    
+                                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="10">
+                                                        <Button Text="Mark Read" 
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationViewModel}}, Path=MarkAsReadCommand}" 
+                                                                CommandParameter="{Binding .}"
+                                                                FontSize="12"
+                                                                HeightRequest="30"
+                                                                BackgroundColor="Transparent"
+                                                                TextColor="{StaticResource Primary}"
+                                                                IsVisible="{Binding IsRead, Converter={StaticResource InverseBoolConverter}}" />
+                                                        
+                                                        <Button Text="Delete" 
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationViewModel}}, Path=DeleteNotificationCommand}" 
+                                                                CommandParameter="{Binding .}"
+                                                                FontSize="12"
+                                                                HeightRequest="30"
+                                                                BackgroundColor="Transparent"
+                                                                TextColor="{StaticResource Error}" />
+                                                    </HorizontalStackLayout>
+                                                </Grid>
+                                            </Frame>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </ScrollView>
+
+                </Grid>
+            </RefreshView>
+        </Grid>
+    </Grid>
+</ContentPage>

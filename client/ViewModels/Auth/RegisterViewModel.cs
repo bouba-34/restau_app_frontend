@@ -6,6 +6,7 @@ using Shared.Helpers;
 using Shared.Models.Auth;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using Client.Constants;
 
 namespace Client.ViewModels.Auth
 {
@@ -88,7 +89,7 @@ namespace Client.ViewModels.Auth
                     var authResponse = await _authService.RegisterAsync(registerRequest);
                     
                     // Navigate to main page
-                    await NavigationService.NavigateToAsync("//MenuPage");
+                    await NavigationService.NavigateToAsync(Routes.Menu);
                     
                     // Show success message
                     await DialogService.DisplayToastAsync(Messages.RegisterSuccess);
@@ -103,7 +104,7 @@ namespace Client.ViewModels.Auth
         [RelayCommand]
         private async Task NavigateToLoginAsync()
         {
-            await NavigationService.NavigateToAsync("//LoginPage");
+            await NavigationService.NavigateToAsync("login");
         }
         
         [RelayCommand]
@@ -131,7 +132,7 @@ namespace Client.ViewModels.Auth
             if (_authService.HasValidSession())
             {
                 // Navigate to main page
-                NavigationService.NavigateToAsync("//MenuPage");
+                NavigationService.NavigateToAsync(Routes.Menu);
             }
         }
     }

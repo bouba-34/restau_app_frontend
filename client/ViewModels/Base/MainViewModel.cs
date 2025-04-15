@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Client.Constants;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Shared.Services.Interfaces;
 using Shared.Services.SignalR;
@@ -129,7 +130,7 @@ namespace Client.ViewModels.Base
                 UpdateLoginState();
                 
                 // Navigate to login page
-                await _navigationService.NavigateToAsync("//LoginPage");
+                await _navigationService.NavigateToAsync(Routes.Login);
                 
                 await _dialogService.DisplayToastAsync("You have been logged out");
             }

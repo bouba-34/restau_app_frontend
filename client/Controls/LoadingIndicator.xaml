@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Client.Controls.LoadingIndicator">
+    
+    <Grid x:Name="Root" 
+          BackgroundColor="#80000000" 
+          IsVisible="False">
+        <Frame CornerRadius="10" 
+               BackgroundColor="White" 
+               Padding="20" 
+               WidthRequest="200"
+               HeightRequest="120"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               BorderColor="Transparent"
+               HasShadow="True">
+            <StackLayout Spacing="15" VerticalOptions="Center" HorizontalOptions="Center">
+                <ActivityIndicator x:Name="ActivityIndicator" 
+                                   IsRunning="True"
+                                   Color="{StaticResource Primary}"
+                                   HeightRequest="40"
+                                   WidthRequest="40"
+                                   HorizontalOptions="Center"/>
+                <Label x:Name="MessageLabel" 
+                       Text="Loading..."
+                       HorizontalOptions="Center"
+                       FontSize="16"
+                       TextColor="#333333" />
+            </StackLayout>
+        </Frame>
+    </Grid>
+</ContentView>

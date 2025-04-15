@@ -1,7 +1,11 @@
-﻿using Client.ViewModels.Base;
+﻿using Client.Constants;
+using Client.ViewModels.Base;
 using Client.Views.Auth;
 using Client.Views.Menu;
+using Client.Views.Notification;
 using Client.Views.Order;
+using Client.Views.Reservation;
+using Client.Views.Settings;
 
 namespace client
 {
@@ -23,32 +27,32 @@ namespace client
         private void RegisterRoutes()
         {
             // Auth routes
-            Routing.RegisterRoute("login", typeof(LoginPage));
-            Routing.RegisterRoute("register", typeof(RegisterPage));
-            Routing.RegisterRoute("profile", typeof(ProfilePage));
+            Routing.RegisterRoute(Routes.Login, typeof(LoginPage));
+            Routing.RegisterRoute(Routes.Register, typeof(RegisterPage));
+            Routing.RegisterRoute(Routes.Profile, typeof(ProfilePage));
             
             // Menu routes
-            Routing.RegisterRoute("menu", typeof(MenuPage));
-            Routing.RegisterRoute("menu/category", typeof(MenuCategoryPage));
-            Routing.RegisterRoute("menu/item", typeof(MenuItemPage));
-            Routing.RegisterRoute("menu/item/detail", typeof(MenuItemDetailPage));
+            Routing.RegisterRoute(Routes.Menu, typeof(MenuPage));
+            Routing.RegisterRoute(Routes.MenuCategory, typeof(MenuCategoryPage));
+            Routing.RegisterRoute(Routes.MenuItem, typeof(MenuItemPage));
+            Routing.RegisterRoute(Routes.MenuItemDetail, typeof(MenuItemDetailPage));
             
             // Order routes
-            Routing.RegisterRoute("cart", typeof(CartPage));
-            Routing.RegisterRoute("order", typeof(OrderPage));
-            Routing.RegisterRoute("order/detail", typeof(OrderDetailPage));
-            Routing.RegisterRoute("order/history", typeof(OrderHistoryPage));
+            Routing.RegisterRoute(Routes.Cart, typeof(CartPage));
+            Routing.RegisterRoute(Routes.Order, typeof(OrderPage));
+            Routing.RegisterRoute(Routes.OrderDetail, typeof(OrderDetailPage));
+            Routing.RegisterRoute(Routes.OrderHistory, typeof(OrderHistoryPage));
             
             // Reservation routes
-            Routing.RegisterRoute("reservation", typeof(ReservationPage));
-            Routing.RegisterRoute("reservation/detail", typeof(ReservationDetailPage));
-            Routing.RegisterRoute("reservation/history", typeof(ReservationHistoryPage));
+            Routing.RegisterRoute(Routes.Reservation, typeof(ReservationPage));
+            Routing.RegisterRoute(Routes.ReservationDetail, typeof(ReservationDetailPage));
+            Routing.RegisterRoute(Routes.ReservationHistory, typeof(ReservationHistoryPage));
             
             // Notification routes
-            Routing.RegisterRoute("notifications", typeof(NotificationPage));
+            Routing.RegisterRoute(Routes.Notifications, typeof(NotificationPage));
             
             // Settings routes
-            Routing.RegisterRoute("settings", typeof(SettingsPage));
+            Routing.RegisterRoute(Routes.Settings, typeof(SettingsPage));
         }
     }
 }

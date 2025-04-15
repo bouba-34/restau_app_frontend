@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Client.ViewModels.Reservation"
+             xmlns:models="clr-namespace:Shared.Models.Reservation;assembly=Shared"
+             x:Class="Client.Views.Reservation.ReservationDetailPage"
+             Title="{Binding Title}">
+    
+
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <ScrollView>
+            <StackLayout Padding="20">
+                <!-- Reservation Status Card -->
+                <Frame Padding="15" CornerRadius="10" HasShadow="True" BorderColor="{StaticResource Gray200}" Margin="0,0,0,15">
+                    <StackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Reservation Status" FontSize="18" FontAttributes="Bold" />
+                            
+                            <Frame Grid.Column="1" Padding="8,4" CornerRadius="8" 
+                                  BackgroundColor="{Binding Reservation.Status, Converter={StaticResource ReservationStatusToColorConverter}}">
+                                <Label Text="{Binding Reservation.Status}" TextColor="White" FontSize="12" FontAttributes="Bold" />
+                            </Frame>
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+                
+                <!-- Validation Errors -->
+                <StackLayout IsVisible="{Binding ValidationErrors.Count, Converter={StaticResource CountToBoolConverter}}">
+                    <CollectionView ItemsSource="{Binding ValidationErrors}" SelectionMode="None" 
+                                  HeightRequest="{Binding ValidationErrors.Count, Converter={StaticResource CountToHeightConverter}}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding .}" TextColor="Red" FontSize="14" Margin="0,2" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+                
+                <!-- View Mode -->
+                <StackLayout IsVisible="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}}">
+                    <Frame Padding="15" CornerRadius="10" HasShadow="True" BorderColor="{StaticResource Gray200}" Margin="0,0,0,15">
+                        <StackLayout>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="Reservation Details" FontSize="18" FontAttributes="Bold" />
+                                
+                                <Button Grid.Column="1" Text="Edit" Command="{Binding ToggleEditModeCommand}" 
+                                       BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                                       IsVisible="{Binding CanModify}" />
+                            </Grid>
+                            
+                            <!-- Date -->
+                            <Grid ColumnDefinitions="Auto,*" Margin="0,10,0,0">
+                                <Label Grid.Column="0" Text="Date:" FontSize="14" TextColor="#666666" />
+                                <Label Grid.Column="1" Text="{Binding Reservation.ReservationDate, StringFormat='{0:D}'}" 
+                                      FontSize="14" Margin="5,0,0,0" />
+                            </Grid>
+                            
+                            <!-- Time -->
+                            <Grid ColumnDefinitions="Auto,*" Margin="0,5,0,0">
+                                <Label Grid.Column="0" Text="Time:" FontSize="14" TextColor="#666666" />
+                                <Label Grid.Column="1" Text="{Binding Reservation.ReservationTime, StringFormat='{0:t}'}" 
+                                      FontSize="14" Margin="5,0,0,0" />
+                            </Grid>
+                            
+                            <!-- Party Size -->
+                            <Grid ColumnDefinitions="Auto,*" Margin="0,5,0,0">
+                                <Label Grid.Column="0" Text="Party Size:" FontSize="14" TextColor="#666666" />
+                                <Label Grid.Column="1" Text="{Binding Reservation.PartySize}" 
+                                      FontSize="14" Margin="5,0,0,0" />
+                            </Grid>
+                            
+                            <!-- Table Number -->
+                            <Grid ColumnDefinitions="Auto,*" Margin="0,5,0,0">
+                                <Label Grid.Column="0" Text="Table:" FontSize="14" TextColor="#666666" />
+                                <Label Grid.Column="1" Text="{Binding Reservation.TableNumber}" 
+                                      FontSize="14" Margin="5,0,0,0" />
+                            </Grid>
+                            
+                            <!-- Special Requests -->
+                            <StackLayout IsVisible="{Binding Reservation.SpecialRequests, Converter={StaticResource StringToBoolConverter}}" 
+                                       Margin="0,10,0,0">
+                                <Label Text="Special Requests:" FontSize="14" TextColor="#666666" />
+                                <Label Text="{Binding Reservation.SpecialRequests}" FontSize="14" Margin="0,5,0,0" />
+                            </StackLayout>
+                            
+                            <!-- Contact Info -->
+                            <Label Text="Contact Information" FontSize="16" FontAttributes="Bold" Margin="0,15,0,5" />
+                            
+                            <Grid ColumnDefinitions="Auto,*" Margin="0,5,0,0">
+                                <Label Grid.Column="0" Text="Phone:" FontSize="14" TextColor="#666666" />
+                                <Label Grid.Column="1" Text="{Binding Reservation.ContactPhone}" 
+                                      FontSize="14" Margin="5,0,0,0" />
+                            </Grid>
+                            
+                            <Grid ColumnDefinitions="Auto,*" Margin="0,5,0,0">
+                                <Label Grid.Column="0" Text="Email:" FontSize="14" TextColor="#666666" />
+                                <Label Grid.Column="1" Text="{Binding Reservation.ContactEmail}" 
+                                      FontSize="14" Margin="5,0,0,0" />
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+                
+                <!-- Edit Mode -->
+                <StackLayout IsVisible="{Binding IsEditMode}">
+                    <Frame Padding="15" CornerRadius="10" HasShadow="True" BorderColor="{StaticResource Gray200}" Margin="0,0,0,15">
+                        <StackLayout>
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <Label Grid.Column="0" Text="Edit Reservation" FontSize="18" FontAttributes="Bold" />
+                                
+                                <Button Grid.Column="1" Text="Cancel" Command="{Binding ToggleEditModeCommand}" 
+                                       BackgroundColor="Transparent" TextColor="{StaticResource Error}" />
+                                       
+                                <Button Grid.Column="2" Text="Save" Command="{Binding SaveChangesCommand}" 
+                                       BackgroundColor="{StaticResource Primary}" TextColor="White" CornerRadius="20" />
+                            </Grid>
+                            
+                            <!-- Date Selection -->
+                            <StackLayout Margin="0,15,0,0">
+                                <Label Text="Date" FontSize="16" FontAttributes="Bold" />
+                                <Frame Padding="10" CornerRadius="8" HasShadow="False" BorderColor="#EEEEEE">
+                                    <DatePicker Date="{Binding SelectedDate}"
+                                              MinimumDate="{Binding MinimumDate}"
+                                              MaximumDate="{Binding MaximumDate}"
+                                              Format="D" />
+                                </Frame>
+                            </StackLayout>
+                            
+                            <!-- Time Selection -->
+                            <StackLayout Margin="0,15,0,0">
+                                <Label Text="Time" FontSize="16" FontAttributes="Bold" />
+                                <Frame Padding="10" CornerRadius="8" HasShadow="False" BorderColor="#EEEEEE">
+                                    <TimePicker Time="{Binding SelectedTime}" Format="t" />
+                                </Frame>
+                            </StackLayout>
+                            
+                            <!-- Party Size -->
+                            <StackLayout Margin="0,15,0,0">
+                                <Label Text="Party Size" FontSize="16" FontAttributes="Bold" />
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <Button Grid.Column="0" 
+                                           Text="-" 
+                                           Command="{Binding DecrementPartySizeCommand}" 
+                                           WidthRequest="40" 
+                                           HeightRequest="40" 
+                                           CornerRadius="20" 
+                                           BackgroundColor="#EEEEEE" 
+                                           TextColor="Black" 
+                                           FontSize="20" />
+                                    
+                                    <Frame Grid.Column="1" 
+                                          Padding="10" 
+                                          CornerRadius="8" 
+                                          HasShadow="False" 
+                                          BorderColor="#EEEEEE"
+                                          HorizontalOptions="Center"
+                                          WidthRequest="100">
+                                        <Label Text="{Binding PartySize}" 
+                                              FontSize="18" 
+                                              FontAttributes="Bold" 
+                                              HorizontalOptions="Center" />
+                                    </Frame>
+                                    
+                                    <Button Grid.Column="2" 
+                                           Text="+" 
+                                           Command="{Binding IncrementPartySizeCommand}" 
+                                           WidthRequest="40" 
+                                           HeightRequest="40" 
+                                           CornerRadius="20" 
+                                           BackgroundColor="#EEEEEE" 
+                                           TextColor="Black" 
+                                           FontSize="20" />
+                                </Grid>
+                            </StackLayout>
+                            
+                            <!-- Phone -->
+                            <StackLayout Margin="0,15,0,0">
+                                <Label Text="Phone Number" FontSize="16" />
+                                <Frame Padding="10" CornerRadius="8" HasShadow="False" BorderColor="#EEEEEE">
+                                    <Entry Text="{Binding ContactPhone}" Placeholder="Your phone number" Keyboard="Telephone" />
+                                </Frame>
+                            </StackLayout>
+                            
+                            <!-- Email -->
+                            <StackLayout Margin="0,10,0,0">
+                                <Label Text="Email" FontSize="16" />
+                                <Frame Padding="10" CornerRadius="8" HasShadow="False" BorderColor="#EEEEEE">
+                                    <Entry Text="{Binding ContactEmail}" Placeholder="Your email address" Keyboard="Email" />
+                                </Frame>
+                            </StackLayout>
+                            
+                            <!-- Special Requests -->
+                            <StackLayout Margin="0,10,0,0">
+                                <Label Text="Special Requests (Optional)" FontSize="16" />
+                                <Frame Padding="10" CornerRadius="8" HasShadow="False" BorderColor="#EEEEEE">
+                                    <Editor Text="{Binding SpecialRequests}" 
+                                           Placeholder="Any special requests or notes" 
+                                           AutoSize="TextChanges" 
+                                           MaxLength="200" />
+                                </Frame>
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+                
+                <!-- Action Buttons -->
+                <Button Text="Cancel Reservation" 
+                       Command="{Binding CancelReservationCommand}" 
+                       BackgroundColor="{StaticResource Error}" 
+                       TextColor="White"
+                       CornerRadius="20"
+                       HeightRequest="50"
+                       Margin="0,10,0,30"
+                       IsVisible="{Binding CanCancel}" />
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

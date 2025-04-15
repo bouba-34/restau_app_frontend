@@ -4,6 +4,7 @@ using Client.ViewModels.Base;
 using Shared.Models.Menu;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using Client.Constants;
 
 namespace Client.ViewModels.Menu
 {
@@ -96,7 +97,7 @@ namespace Client.ViewModels.Menu
                 { "CategoryName", category.Name }
             };
             
-            await NavigationService.NavigateToAsync("menu/category", parameters);
+            await NavigationService.NavigateToAsync(Routes.MenuCategory, parameters);
         }
         
         [RelayCommand]
@@ -110,7 +111,7 @@ namespace Client.ViewModels.Menu
                 { "ItemId", item.Id }
             };
             
-            await NavigationService.NavigateToAsync("menu/item/detail", parameters);
+            await NavigationService.NavigateToAsync(Routes.MenuItemDetail, parameters);
         }
         
         [RelayCommand]

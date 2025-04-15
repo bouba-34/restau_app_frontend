@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Client.ViewModels.Menu"
+             xmlns:controls="clr-namespace:Client.Controls"
+             x:Class="Client.Views.Menu.MenuItemPage"
+             Title="{Binding Title}">
+    
+
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <Grid>
+            <!-- Loading indicator -->
+            <controls:LoadingIndicator IsRunning="{Binding IsBusy}" Message="Loading item..." />
+            
+            <ScrollView>
+                <StackLayout Padding="15">
+                    <!-- Item Image -->
+                    <Frame Padding="0" CornerRadius="10" IsClippedToBounds="True" HasShadow="True" HeightRequest="200">
+                        <Grid>
+                            <Image Source="{Binding MenuItem.ImageUrl}" Aspect="AspectFill" HeightRequest="200" />
+                            
+                            <!-- Discount Badge -->
+                            <Frame BackgroundColor="{StaticResource Accent}" 
+                                  Padding="8,4" 
+                                  CornerRadius="5" 
+                                  HorizontalOptions="End" 
+                                  VerticalOptions="Start" 
+                                  Margin="0,10,10,0"
+                                  IsVisible="{Binding HasDiscount}">
+                                <Label Text="{Binding MenuItem.DiscountPercentage, StringFormat='{0}% OFF'}" 
+                                      TextColor="White" 
+                                      FontSize="12" 
+                                      FontAttributes="Bold" />
+                            </Frame>
+                        </Grid>
+                    </Frame>
+                    
+                    <!-- Item Details -->
+                    <StackLayout Margin="0,15,0,0">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="{Binding MenuItem.Name}" FontSize="24" FontAttributes="Bold" />
+                            
+                            <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding OriginalPrice, StringFormat='${0:F2}'}" 
+                                      TextDecorations="Strikethrough" 
+                                      FontSize="16" 
+                                      TextColor="#666666"
+                                      HorizontalOptions="End"
+                                      IsVisible="{Binding HasDiscount}" />
+                                
+                                <Label Text="{Binding MenuItem.Price, StringFormat='${0:F2}'}" 
+                                      FontSize="20" 
+                                      FontAttributes="Bold" 
+                                      TextColor="{StaticResource Primary}"
+                                      HorizontalOptions="End" />
+                            </StackLayout>
+                        </Grid>
+                        
+                        <Label Text="{Binding MenuItem.CategoryName}" 
+                              FontSize="16" 
+                              TextColor="#666666" 
+                              Margin="0,5,0,10" />
+                        
+                        <!-- Dietary Information -->
+                        <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center">
+                            <Frame BackgroundColor="{StaticResource PrimaryLight}" 
+                                  Padding="8,4" 
+                                  CornerRadius="15" 
+                                  Margin="0,0,5,5"
+                                  IsVisible="{Binding MenuItem.IsVegetarian}">
+                                <Label Text="Vegetarian" 
+                                      TextColor="{StaticResource Primary}" 
+                                      FontSize="12" />
+                            </Frame>
+                            
+                            <Frame BackgroundColor="{StaticResource PrimaryLight}" 
+                                  Padding="8,4" 
+                                  CornerRadius="15" 
+                                  Margin="0,0,5,5"
+                                  IsVisible="{Binding MenuItem.IsVegan}">
+                                <Label Text="Vegan" 
+                                      TextColor="{StaticResource Primary}" 
+                                      FontSize="12" />
+                            </Frame>
+                            
+                            <Frame BackgroundColor="{StaticResource PrimaryLight}" 
+                                  Padding="8,4" 
+                                  CornerRadius="15" 
+                                  Margin="0,0,5,5"
+                                  IsVisible="{Binding MenuItem.IsGlutenFree}">
+                                <Label Text="Gluten Free" 
+                                      TextColor="{StaticResource Primary}" 
+                                      FontSize="12" />
+                            </Frame>
+                        </FlexLayout>
+                        
+                        <!-- Description -->
+                        <Label Text="Description" FontSize="18" FontAttributes="Bold" Margin="0,15,0,5" />
+                        <Label Text="{Binding MenuItem.Description}" TextColor="#444444" />
+                        
+                        <!-- Quantity Control -->
+                        <Label Text="Quantity" FontSize="18" FontAttributes="Bold" Margin="0,20,0,5" />
+                        <Grid ColumnDefinitions="Auto,Auto,Auto" HorizontalOptions="Start">
+                            <Button Grid.Column="0" 
+                                   Text="-" 
+                                   Command="{Binding RemoveQuantityCommand}" 
+                                   WidthRequest="40" 
+                                   HeightRequest="40" 
+                                   CornerRadius="20" 
+                                   FontSize="20"
+                                   BackgroundColor="#EEEEEE"
+                                   TextColor="Black" />
+                                   
+                            <Frame Grid.Column="1" 
+                                  BackgroundColor="Transparent" 
+                                  BorderColor="#EEEEEE" 
+                                  WidthRequest="60" 
+                                  HeightRequest="40" 
+                                  CornerRadius="0"
+                                  HasShadow="False" 
+                                  Padding="0">
+                                <Label Text="{Binding Quantity}" 
+                                      HorizontalOptions="Center" 
+                                      VerticalOptions="Center"
+                                      FontSize="18"
+                                      FontAttributes="Bold" />
+                            </Frame>
+                            
+                            <Button Grid.Column="2" 
+                                   Text="+" 
+                                   Command="{Binding AddQuantityCommand}" 
+                                   WidthRequest="40" 
+                                   HeightRequest="40" 
+                                   CornerRadius="20" 
+                                   FontSize="20"
+                                   BackgroundColor="#EEEEEE"
+                                   TextColor="Black" />
+                        </Grid>
+                        
+                        <!-- Total Price -->
+                        <StackLayout Orientation="Horizontal" Margin="0,20,0,0">
+                            <Label Text="Total:" 
+                                  FontSize="18" 
+                                  FontAttributes="Bold" 
+                                  VerticalOptions="Center" />
+                            
+                            <Label Text="{Binding TotalPrice, StringFormat='${0:F2}'}" 
+                                  FontSize="22" 
+                                  FontAttributes="Bold" 
+                                  TextColor="{StaticResource Primary}"
+                                  VerticalOptions="Center"
+                                  Margin="10,0,0,0" />
+                        </StackLayout>
+                        
+                        <!-- Add to Cart Button -->
+                        <Button Text="Add to Cart" 
+                               Command="{Binding AddToCartCommand}" 
+                               BackgroundColor="{StaticResource Primary}" 
+                               TextColor="White" 
+                               HeightRequest="50" 
+                               CornerRadius="25"
+                               Margin="0,20,0,10" />
+                        
+                        <!-- View Details Button -->
+                        <Button Text="View Full Details" 
+                               Command="{Binding ViewDetailCommand}" 
+                               BackgroundColor="Transparent" 
+                               TextColor="{StaticResource Primary}"
+                               BorderColor="{StaticResource Primary}"
+                               BorderWidth="1"
+                               HeightRequest="50" 
+                               CornerRadius="25"
+                               Margin="0,0,0,20" />
+                    </StackLayout>
+                </StackLayout>
+            </ScrollView>
+        </Grid>
+    </RefreshView>
+</ContentPage>

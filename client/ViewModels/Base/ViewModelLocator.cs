@@ -1,12 +1,9 @@
-﻿using client.ViewModels.Auth;
-using Client.ViewModels.Auth;
-using client.ViewModels.Menu;
+﻿using Client.ViewModels.Auth;
 using Client.ViewModels.Menu;
-using client.ViewModels.Notification;
-using client.ViewModels.Order;
+using Client.ViewModels.Notification;
 using Client.ViewModels.Order;
-using client.ViewModels.Reservation;
-using client.ViewModels.Settings;
+using Client.ViewModels.Reservation;
+using Client.ViewModels.Settings;
 
 namespace Client.ViewModels.Base
 {

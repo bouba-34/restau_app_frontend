@@ -2,18 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Client.ViewModels.Reservation"
-             xmlns:reservation="clr-namespace:Shared.Models.Reservation;assembly=Shared"
+             xmlns:models="clr-namespace:Shared.Models.Reservation;assembly=Shared"
              x:Class="Client.Views.Reservation.ReservationPage"
              Title="{Binding Title}">
-
-    <ContentPage.BindingContext>
-        <vm:ReservationViewModel />
-    </ContentPage.BindingContext>
+    
 
     <ScrollView>
         <StackLayout Padding="20">
             <!-- Reservation Form -->
-            <Label Text="New Reservation" FontSize="24" FontAttributes="Bold" />
+            <Label Text="Make a Reservation" FontSize="24" FontAttributes="Bold" />
             
             <!-- Validation Errors -->
             <StackLayout IsVisible="{Binding ValidationErrors.Count, Converter={StaticResource CountToBoolConverter}}">
@@ -111,7 +108,7 @@
                                HeightRequest="{Binding AvailableTables.Count, Converter={StaticResource CountToHeightConverter}, ConverterParameter=70}"
                                Margin="0,10,0,20">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="reservation:AvailableTable">
+                        <DataTemplate x:DataType="models:AvailableTable">
                             <Grid Padding="10" Margin="0,5">
                                 <Frame Padding="15" CornerRadius="10" HasShadow="True" BorderColor="#EEEEEE">
                                     <Grid ColumnDefinitions="*,Auto,Auto">
@@ -125,9 +122,10 @@
                                                VerticalOptions="Center" 
                                                Margin="10,0" />
                                         
-                                        <StackLayout Grid.Column="2" VerticalOptions="Center">
-                                            <CheckBox IsChecked="{Binding Source={RelativeSource Self}, Path=BindingContext.SelectedTable, Mode=TwoWay}" />
-                                        </StackLayout>
+                                        <RadioButton Grid.Column="2" 
+                                                   IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                   GroupName="TableGroup"
+                                                   VerticalOptions="Center" />
                                     </Grid>
                                 </Frame>
                             </Grid>

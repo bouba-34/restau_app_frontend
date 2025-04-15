@@ -5,6 +5,7 @@ using Shared.Constants;
 using Shared.Models.Order;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using Client.Constants;
 
 namespace Client.ViewModels.Order
 {
@@ -306,7 +307,7 @@ namespace Client.ViewModels.Order
                         { "OrderId", orderId }
                     };
                     
-                    await NavigationService.NavigateToAsync("order/detail", parameters);
+                    await NavigationService.NavigateToAsync(Routes.OrderDetail, parameters);
                 }
                 catch (Exception ex)
                 {

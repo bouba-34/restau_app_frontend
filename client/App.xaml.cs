@@ -1,5 +1,6 @@
 ﻿using client;
 using Client.ViewModels.Base;
+using Client.Views.Menu;
 using Shared.Services.Interfaces;
 
 namespace Client
@@ -21,6 +22,7 @@ namespace Client
             _viewModelLocator = viewModelLocator;
 
             MainPage = new AppShell(viewModelLocator);
+            //MainPage = new MenuPage(viewModelLocator);
             
             // Register for window metrics changes
             Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (handler, view) =>

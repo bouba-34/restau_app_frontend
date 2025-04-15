@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Globalization;
+using Microsoft.Maui.Controls;
 
 namespace Client.Converters
 {
@@ -7,29 +9,20 @@ namespace Client.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is null)
-                return 0;
-                
-            var collectionView = System.Maui.VisualStateManager.GetVisualStateManager(value);
-            var index = -1;
-            
-            if (collectionView is CollectionView collection)
+            if (value == null)
+                return -1;
+
+            var parentBindingContext = parameter as IEnumerable;
+
+            if (parentBindingContext is IList list)
             {
-                if (collection.ItemsSource is IList items)
-                {
-                    index = items.IndexOf(value);
-                }
+                int index = list.IndexOf(value);
+                return index >= 0 ? index : -1;
             }
-            
-            // Add offset if parameter exists
-            if (parameter != null && int.TryParse(parameter.ToString(), out var offset))
-            {
-                index += offset;
-            }
-            
-            return index;
+
+            return -1;
         }
-        
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

@@ -5,10 +5,7 @@
              xmlns:order="clr-namespace:Shared.Models.Order;assembly=Shared"
              x:Class="Client.Views.Order.CartPage"
              Title="{Binding Title}">
-
-    <ContentPage.BindingContext>
-        <vm:CartViewModel />
-    </ContentPage.BindingContext>
+    
     
     <Grid RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">

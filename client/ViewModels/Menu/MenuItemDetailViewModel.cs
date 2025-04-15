@@ -6,6 +6,7 @@ using Shared.Models.Menu;
 using Shared.Models.Order;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using Client.Constants;
 
 namespace Client.ViewModels.Menu
 {
@@ -183,7 +184,7 @@ namespace Client.ViewModels.Menu
                     await DialogService.DisplayToastAsync(Messages.ItemAddedToCart);
                     
                     // Navigate to cart
-                    await NavigationService.NavigateToAsync("//CartPage");
+                    await NavigationService.NavigateToAsync(Routes.Cart);
                 }
                 catch (Exception ex)
                 {

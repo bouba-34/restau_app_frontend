@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Client.Controls.NotificationBadge">
+
+    <Grid>
+        <ContentView x:Name="ContentContainer">
+            <!-- Content goes here -->
+        </ContentView>
+        
+        <Frame x:Name="Badge" 
+               BackgroundColor="{StaticResource Accent}" 
+               BorderColor="Transparent"
+               Padding="5,2"
+               CornerRadius="10"
+               HasShadow="False"
+               HeightRequest="20"
+               WidthRequest="{Binding Path=Width, Source={x:Reference BadgeLabel}}"
+               MinimumWidthRequest="20"
+               HorizontalOptions="End"
+               VerticalOptions="Start"
+               IsVisible="False"
+               Margin="0,-8,-8,0">
+            <Label x:Name="BadgeLabel" 
+                   TextColor="White" 
+                   FontSize="10" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   MinimumWidthRequest="16"
+                   Padding="0" />
+        </Frame>
+    </Grid>
+</ContentView>

@@ -2,13 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Client.ViewModels.Menu"
-             xmlns:models="clr-namespace:Shared.Models.Menu;assembly=Restaurant.Shared"
+             xmlns:menu="clr-namespace:Shared.Models.Menu;assembly=Shared"
+             xmlns:controls="clr-namespace:Client.Controls"
              x:Class="Client.Views.Menu.MenuPage"
              Title="{Binding Title}">
-
-    <ContentPage.BindingContext>
-        <vm:MenuViewModel />
-    </ContentPage.BindingContext>
+    
 
     <Grid RowDefinitions="Auto,*">
         <!-- Search Bar -->
@@ -36,7 +34,7 @@
                                         SelectionMode="None"
                                         HeightRequest="{Binding SearchResults.Count, Converter={StaticResource CountToHeightConverter}, ConverterParameter=120}">
                             <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="models:MenuItem">
+                                <DataTemplate x:DataType="menu:MenuItem">
                                     <Grid Padding="5" Margin="0,5">
                                         <Frame CornerRadius="10" HasShadow="True" BorderColor="#EEEEEE">
                                             <Grid ColumnDefinitions="Auto,*" Padding="5">
@@ -106,7 +104,7 @@
                                         SelectionMode="None"
                                         ItemsLayout="HorizontalList">
                             <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="models:MenuItem">
+                                <DataTemplate x:DataType="menu:MenuItem">
                                     <Grid Padding="5" WidthRequest="180">
                                         <Frame CornerRadius="10" HasShadow="True" BorderColor="#EEEEEE">
                                             <Grid RowDefinitions="120,*" Padding="5">
@@ -157,7 +155,7 @@
                         <CollectionView ItemsSource="{Binding Categories}" 
                                         SelectionMode="None">
                             <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="models:MenuCategory">
+                                <DataTemplate x:DataType="menu:MenuCategory">
                                     <Grid Padding="5" Margin="0,5">
                                         <Frame CornerRadius="10" HasShadow="True" BorderColor="#EEEEEE">
                                             <Grid ColumnDefinitions="Auto,*" Padding="5">

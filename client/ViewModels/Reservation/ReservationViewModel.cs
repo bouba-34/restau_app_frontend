@@ -6,6 +6,7 @@ using Shared.Helpers;
 using Shared.Models.Reservation;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using Client.Constants;
 
 namespace Client.ViewModels.Reservation
 {
@@ -172,7 +173,7 @@ namespace Client.ViewModels.Reservation
                         { "ReservationId", reservationId }
                     };
                     
-                    await NavigationService.NavigateToAsync("reservation/detail", parameters);
+                    await NavigationService.NavigateToAsync(Routes.ReservationDetail, parameters);
                 }
                 catch (Exception ex)
                 {
@@ -184,7 +185,7 @@ namespace Client.ViewModels.Reservation
         [RelayCommand]
         private async Task NavigateToReservationHistoryAsync()
         {
-            await NavigationService.NavigateToAsync("reservation/history");
+            await NavigationService.NavigateToAsync(Routes.ReservationHistory);
         }
         
         public override async Task InitializeAsync(object parameter = null)

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Client.Services;
-using Client.ViewModels;
 using Client.ViewModels.Auth;
 using Client.ViewModels.Base;
 using Client.ViewModels.Menu;
@@ -19,12 +18,7 @@ using Shared.Services.Interfaces;
 using Shared.Services.SignalR;
 using System.Net.Http.Headers;
 using client.Services;
-using client.ViewModels.Auth;
-using client.ViewModels.Menu;
-using client.ViewModels.Notification;
-using client.ViewModels.Order;
-using client.ViewModels.Reservation;
-using client.ViewModels.Settings;
+using CommunityToolkit.Maui;
 
 namespace Client
 {
@@ -35,6 +29,7 @@ namespace Client
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -43,6 +38,7 @@ namespace Client
                     fonts.AddFont("FontAwesome-Solid.ttf", "FontAwesomeSolid");
                     fonts.AddFont("FontAwesome-Brands.ttf", "FontAwesomeBrands");
                 });
+
 
             // Register Services
             RegisterServices(builder.Services);

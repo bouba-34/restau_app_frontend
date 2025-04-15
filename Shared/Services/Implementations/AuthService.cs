@@ -20,8 +20,12 @@ namespace Shared.Services.Implementations
                 Username = username,
                 Password = password
             };
+            
+            //Console.WriteLine($"login data: username: {username}, password: {password}");
 
             var response = await PostAsync<ApiResponse<AuthResponse>>(ApiEndpoints.Login, request);
+            
+            Console.WriteLine($"response data: {response.Data.Token}");
 
             if (response.Success && response.Data != null)
             {

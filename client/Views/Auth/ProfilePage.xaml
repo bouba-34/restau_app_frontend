@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Client.ViewModels.Auth"
+             x:Class="Client.Views.Auth.ProfilePage"
+             Title="{Binding Title}">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="ProfileLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="#666666" />
+                <Setter Property="Margin" Value="0,10,0,0" />
+            </Style>
+            <Style x:Key="ProfileValueStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="Margin" Value="0,5,0,0" />
+            </Style>
+            <Style x:Key="ProfileInputStyle" TargetType="Entry">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Margin" Value="0,5,0,0" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadProfileCommand}">
+        <ScrollView>
+            <StackLayout Padding="20">
+                <!-- Profile Header -->
+                <Frame CornerRadius="100" HeightRequest="100" WidthRequest="100" Padding="0"
+                       BorderColor="Transparent" IsClippedToBounds="True" HorizontalOptions="Center">
+                    <Image Source="profile_placeholder.png" HeightRequest="100" WidthRequest="100" Aspect="AspectFill" />
+                </Frame>
+                
+                <Label Text="{Binding UserProfile.Username}" FontSize="24" FontAttributes="Bold" 
+                       HorizontalOptions="Center" Margin="0,10,0,5" />
+                
+                <Label Text="{Binding UserProfile.UserType}" FontSize="16" TextColor="#666666" 
+                       HorizontalOptions="Center" Margin="0,0,0,20" />
+                
+                <!-- Validation Errors -->
+                <StackLayout IsVisible="{Binding ValidationErrors.Count, Converter={StaticResource CountToBoolConverter}}">
+                    <CollectionView ItemsSource="{Binding ValidationErrors}" SelectionMode="None" 
+                                  HeightRequest="{Binding ValidationErrors.Count, Converter={StaticResource CountToHeightConverter}}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding .}" TextColor="Red" FontSize="14" Margin="0,2" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+                
+                <!-- Profile Information -->
+                <Frame Padding="15" CornerRadius="10" HasShadow="True" Margin="0,10,0,15" BorderColor="{StaticResource Gray200}">
+                    <StackLayout>
+                        <!-- Edit Mode Controls -->
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="End" IsVisible="{Binding IsEditMode}">
+                            <Button Text="Cancel" Command="{Binding ToggleEditModeCommand}" 
+                                    BackgroundColor="Transparent" TextColor="{StaticResource Error}" />
+                            <Button Text="Save" Command="{Binding SaveProfileCommand}" 
+                                    BackgroundColor="{StaticResource Primary}" TextColor="White" CornerRadius="20" />
+                        </StackLayout>
+                        
+                        <!-- View Mode Controls -->
+                        <Button Text="Edit Profile" Command="{Binding ToggleEditModeCommand}" 
+                                HorizontalOptions="End" BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                                IsVisible="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}}" />
+                    
+                        <!-- Email -->
+                        <Label Text="Email" Style="{StaticResource ProfileLabelStyle}" />
+                        <Label Text="{Binding UserProfile.Email}" Style="{StaticResource ProfileValueStyle}" 
+                               IsVisible="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}}" />
+                        <Entry Text="{Binding UserProfile.Email}" Style="{StaticResource ProfileInputStyle}" 
+                               IsVisible="{Binding IsEditMode}" Keyboard="Email" />
+                        
+                        <!-- Phone -->
+                        <Label Text="Phone Number" Style="{StaticResource ProfileLabelStyle}" />
+                        <Label Text="{Binding UserProfile.PhoneNumber}" Style="{StaticResource ProfileValueStyle}" 
+                               IsVisible="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}}" />
+                        <Entry Text="{Binding UserProfile.PhoneNumber}" Style="{StaticResource ProfileInputStyle}" 
+                               IsVisible="{Binding IsEditMode}" Keyboard="Telephone" />
+                        
+                        <!-- Created Date -->
+                        <Label Text="Member Since" Style="{StaticResource ProfileLabelStyle}" />
+                        <Label Text="{Binding UserProfile.CreatedAt, StringFormat='{0:MMMM d, yyyy}'}" Style="{StaticResource ProfileValueStyle}" />
+                    </StackLayout>
+                </Frame>
+                
+                <!-- Password Change Section -->
+                <Frame Padding="15" CornerRadius="10" HasShadow="True" Margin="0,5,0,15" BorderColor="{StaticResource Gray200}">
+                    <StackLayout>
+                        <Label Text="Password Settings" FontSize="18" FontAttributes="Bold" />
+                        
+                        <!-- Password Change Button -->
+                        <Button Text="Change Password" Command="{Binding TogglePasswordChangeModeCommand}" 
+                                BackgroundColor="Transparent" TextColor="{StaticResource Primary}" HorizontalOptions="Start"
+                                IsVisible="{Binding IsPasswordChangeMode, Converter={StaticResource InverseBoolConverter}}" />
+                        
+                        <!-- Password Change Form -->
+                        <StackLayout IsVisible="{Binding IsPasswordChangeMode}">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                                <Button Text="Cancel" Command="{Binding TogglePasswordChangeModeCommand}" 
+                                        BackgroundColor="Transparent" TextColor="{StaticResource Error}" />
+                                <Button Text="Update" Command="{Binding ChangePasswordCommand}" 
+                                        BackgroundColor="{StaticResource Primary}" TextColor="White" CornerRadius="20" />
+                            </StackLayout>
+                            
+                            <!-- Current Password -->
+                            <Label Text="Current Password" Style="{StaticResource ProfileLabelStyle}" />
+                            <Entry Text="{Binding CurrentPassword}" IsPassword="True" Style="{StaticResource ProfileInputStyle}" />
+                            
+                            <!-- New Password -->
+                            <Label Text="New Password" Style="{StaticResource ProfileLabelStyle}" />
+                            <Entry Text="{Binding NewPassword}" IsPassword="True" Style="{StaticResource ProfileInputStyle}" />
+                            
+                            <!-- Confirm Password -->
+                            <Label Text="Confirm Password" Style="{StaticResource ProfileLabelStyle}" />
+                            <Entry Text="{Binding ConfirmPassword}" IsPassword="True" Style="{StaticResource ProfileInputStyle}" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

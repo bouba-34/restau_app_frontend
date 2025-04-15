@@ -6,6 +6,7 @@ using Shared.Helpers;
 using Shared.Services.Interfaces;
 using Shared.Services.SignalR;
 using System.Collections.ObjectModel;
+using Client.Constants;
 
 namespace Client.ViewModels.Auth
 {
@@ -91,7 +92,7 @@ namespace Client.ViewModels.Auth
                 {
                     // Attempt login
                     var authResponse = await _authService.LoginAsync(Username, Password);
-                    
+                    //Console.WriteLine($"data from log viewmodel {authResponse.Token}");
                     // Save credentials if remember me is checked
                     SaveCredentials();
                     
@@ -101,6 +102,7 @@ namespace Client.ViewModels.Auth
                         try
                         {
                             await _signalRService.ConnectAsync();
+                            Console.WriteLine("signalR connected");
                         }
                         catch (Exception ex)
                         {
@@ -110,7 +112,7 @@ namespace Client.ViewModels.Auth
                     }
                     
                     // Navigate to main page
-                    await NavigationService.NavigateToAsync("//MenuPage");
+                    await NavigationService.NavigateToAsync(Routes.Menu);
                     
                     // Show welcome message
                     await DialogService.DisplayToastAsync($"Welcome, {authResponse.Username}!");
@@ -129,7 +131,8 @@ namespace Client.ViewModels.Auth
         [RelayCommand]
         private async Task NavigateToRegisterAsync()
         {
-            await NavigationService.NavigateToAsync("//RegisterPage");
+            //Console.WriteLine("going to register page...");
+            await NavigationService.NavigateToAsync(Routes.Register);
         }
         
         [RelayCommand]
@@ -152,7 +155,7 @@ namespace Client.ViewModels.Auth
             if (_authService.HasValidSession())
             {
                 // Navigate to main page
-                NavigationService.NavigateToAsync("//MenuPage");
+                NavigationService.NavigateToAsync(Routes.Menu);
             }
         }
     }

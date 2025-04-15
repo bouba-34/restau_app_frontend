@@ -5,11 +5,7 @@
              x:Class="Client.Views.Auth.LoginPage"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
-
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
-
+    
     <Grid RowDefinitions="Auto,*,Auto">
         <!-- Header -->
         <StackLayout Grid.Row="0" Padding="0,60,0,0" HorizontalOptions="Center">

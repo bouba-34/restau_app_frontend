@@ -6,6 +6,7 @@ namespace Client.Services
     {
         public async Task NavigateToAsync(string route, IDictionary<string, object> parameters = null)
         {
+            Console.WriteLine($"Navigating to {route}");
             await InvokeOnMainThreadAsync(() => NavigateToRoute(route, parameters));
         }
 
@@ -31,15 +32,15 @@ namespace Client.Services
         
         private static void NavigateToRoute(string route, IDictionary<string, object> parameters = null)
         {
+            var safeParams = parameters ?? new Dictionary<string, object>();
+
             if (route.StartsWith("//"))
             {
-                // Absolute route
-                Shell.Current.GoToAsync(route, parameters);
+                Shell.Current.GoToAsync(route, safeParams);
             }
             else
             {
-                // Relative route
-                Shell.Current.GoToAsync(route, parameters);
+                Shell.Current.GoToAsync(route, safeParams);
             }
         }
         
