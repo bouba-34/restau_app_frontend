@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:Shared.Models.Order;assembly=Shared"
+             xmlns:converters="clr-namespace:admin.Converters"
+             x:Class="admin.Controls.OrderCard"
+             x:Name="this">
+
+    <ContentView.Resources>
+        <converters:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter" />
+        <converters:PaymentStatusToColorConverter x:Key="PaymentStatusToColorConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </ContentView.Resources>
+
+    <Frame Style="{StaticResource CardStyle}" Margin="0,4,0,4">
+        <Grid RowDefinitions="Auto,Auto,Auto">
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                <Label Grid.Column="0" 
+                       Text="{Binding Order.Id, Source={x:Reference this}, StringFormat='Order #{0}'}"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       TextColor="{DynamicResource TextPrimaryColor}" />
+                
+                <Frame Grid.Column="1"
+                       BackgroundColor="{Binding Order.Status, Source={x:Reference this}, Converter={StaticResource OrderStatusToColorConverter}}"
+                       CornerRadius="15"
+                       Padding="10,5"
+                       HasShadow="False">
+                    <Label Text="{Binding Order.Status, Source={x:Reference this}}"
+                           TextColor="White"
+                           FontSize="12"
+                           FontAttributes="Bold" />
+                </Frame>
+            </Grid>
+            
+            <!-- Customer Info -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                <VerticalStackLayout Grid.Column="0">
+                    <Label Text="{Binding Order.CustomerName, Source={x:Reference this}}"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextPrimaryColor}" />
+                    <Label Text="{Binding Order.CreatedAt, Source={x:Reference this}, StringFormat='{0:MM/dd/yyyy HH:mm}'}"
+                           FontSize="12"
+                           TextColor="{DynamicResource TextSecondaryColor}" />
+                    <Label Text="{Binding Order.Type, Source={x:Reference this}}"
+                           FontSize="12"
+                           TextColor="{DynamicResource TextSecondaryColor}" />
+                </VerticalStackLayout>
+                
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+                    <Label Text="{Binding Order.TotalAmount, Source={x:Reference this}, StringFormat='${0:N2}'}"
+                           FontAttributes="Bold"
+                           FontSize="16"
+                           TextColor="{DynamicResource TextPrimaryColor}"
+                           HorizontalOptions="End" />
+                    <Frame BackgroundColor="{Binding Order.PaymentStatus, Source={x:Reference this}, Converter={StaticResource PaymentStatusToColorConverter}}"
+                           CornerRadius="15"
+                           Padding="10,3"
+                           HasShadow="False"
+                           HorizontalOptions="End">
+                        <Label Text="{Binding Order.PaymentStatus, Source={x:Reference this}}"
+                               TextColor="White"
+                               FontSize="10"
+                               FontAttributes="Bold" />
+                    </Frame>
+                </VerticalStackLayout>
+            </Grid>
+            
+            <!-- Actions -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,10,0,0">
+                <Button Grid.Column="0"
+                        Text="View Details"
+                        Command="{Binding ViewDetailsCommand, Source={x:Reference this}}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Margin="0,0,5,0" />
+                
+                <Button Grid.Column="1"
+                        Text="{Binding NextActionText, Source={x:Reference this}}"
+                        Command="{Binding UpdateStatusCommand, Source={x:Reference this}}"
+                        Style="{StaticResource SuccessButtonStyle}"
+                        Margin="5,0,0,0"
+                        IsVisible="{Binding ShowNextActionButton, Source={x:Reference this}}" />
+            </Grid>
+        </Grid>
+    </Frame>
+</ContentView>

@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:admin.Controls"
+             xmlns:converters="clr-namespace:admin.Converters"
+             xmlns:model="clr-namespace:Shared.Models.Order;assembly=Shared"
+             x:Class="admin.Views.OrderDetailPage"
+             x:DataType="viewmodels:OrderDetailViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter" />
+        <converters:PaymentStatusToColorConverter x:Key="PaymentStatusToColorConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <VerticalStackLayout>
+                <Label Text="{Binding Title}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="White" />
+                <Label Text="{Binding Subtitle}"
+                       FontSize="16"
+                       TextColor="White"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Content -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <ScrollView>
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" Padding="20" RowSpacing="20">
+
+                    <!-- Error Message -->
+                    <Frame Grid.Row="0" 
+                           IsVisible="{Binding HasError}"
+                           BackgroundColor="{StaticResource ErrorColor}"
+                           BorderColor="Transparent"
+                           CornerRadius="8"
+                           Padding="16"
+                           Margin="0">
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="White"
+                               FontSize="14" />
+                    </Frame>
+
+                    <!-- Order Status -->
+                    <Frame Grid.Row="1" 
+                           Style="{StaticResource CardStyle}">
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="Order Status"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                   
+                            <Frame Grid.Row="0" Grid.Column="1"
+                                   BackgroundColor="{Binding Order.Status, Converter={StaticResource OrderStatusToColorConverter}}"
+                                   CornerRadius="15"
+                                   Padding="15,5"
+                                   HasShadow="False"
+                                   VerticalOptions="Start">
+                                <Label Text="{Binding Order.Status}"
+                                       TextColor="White"
+                                       FontSize="14"
+                                       FontAttributes="Bold" />
+                            </Frame>
+
+                            <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                        Orientation="Horizontal" 
+                                        Spacing="10" 
+                                        Margin="0,20,0,0">
+                                <Button Text="{Binding NextStatusButtonText}"
+                                        Command="{Binding UpdateStatusCommand}"
+                                        Style="{StaticResource SuccessButtonStyle}"
+                                        IsVisible="{Binding CanUpdateStatus}" />
+                                        
+                                <Button Text="Cancel Order"
+                                        Command="{Binding CancelOrderCommand}"
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        IsVisible="{Binding CanCancelOrder}" />
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Order Details -->
+                    <Frame Grid.Row="2" 
+                           Style="{StaticResource CardStyle}">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="15">
+                            <Label Grid.Row="0"
+                                   Text="Order Details"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                   
+                            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="15" RowSpacing="10">
+                                <Label Grid.Row="0" Grid.Column="0" Text="Order Type:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Order.Type}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="1" Grid.Column="0" Text="Table Number:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Order.TableNumber}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="2" Grid.Column="0" Text="Order Time:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Order.CreatedAt, StringFormat='{0:MM/dd/yyyy HH:mm}'}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="3" Grid.Column="0" Text="Payment Status:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Frame Grid.Row="3" Grid.Column="1"
+                                       BackgroundColor="{Binding Order.PaymentStatus, Converter={StaticResource PaymentStatusToColorConverter}}"
+                                       CornerRadius="15"
+                                       Padding="10,3"
+                                       HasShadow="False"
+                                       HorizontalOptions="Start">
+                                    <Label Text="{Binding Order.PaymentStatus}"
+                                           TextColor="White"
+                                           FontSize="12"
+                                           FontAttributes="Bold" />
+                                </Frame>
+                                
+                                <Label Grid.Row="4" Grid.Column="0" Text="Payment Method:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="4" Grid.Column="1" Text="{Binding Order.PaymentMethod}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="5" Grid.Column="0" Text="Special Instructions:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="5" Grid.Column="1" Text="{Binding Order.SpecialInstructions}" TextColor="{DynamicResource TextPrimaryColor}" />
+                            </Grid>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Order Items -->
+                    <Frame Grid.Row="3" 
+                           Style="{StaticResource CardStyle}">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="15">
+                            <Label Grid.Row="0"
+                                   Text="Order Items"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                   
+                            <CollectionView Grid.Row="1"
+                                           ItemsSource="{Binding OrderItems}"
+                                           EmptyView="No items in this order">
+                                <CollectionView.Header>
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" Padding="10,5" BackgroundColor="{DynamicResource CardBackgroundColor}">
+                                        <Label Grid.Column="0" Text="Item" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        <Label Grid.Column="1" Text="Qty" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" HorizontalOptions="Center" />
+                                        <Label Grid.Column="2" Text="Price" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" HorizontalOptions="Center" />
+                                        <Label Grid.Column="3" Text="Subtotal" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" HorizontalOptions="End" />
+                                    </Grid>
+                                </CollectionView.Header>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:OrderItem">
+                                        <Grid ColumnDefinitions="*,Auto,Auto,Auto" Padding="10,8">
+                                            <Label Grid.Column="0" Text="{Binding MenuItemName}" TextColor="{DynamicResource TextPrimaryColor}" VerticalOptions="Center" />
+                                            <Label Grid.Column="1" Text="{Binding Quantity}" TextColor="{DynamicResource TextPrimaryColor}" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,0,10,0" />
+                                            <Label Grid.Column="2" Text="{Binding UnitPrice, StringFormat='${0:N2}'}" TextColor="{DynamicResource TextPrimaryColor}" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,10,0" />
+                                            <Label Grid.Column="3" Text="{Binding Subtotal, StringFormat='${0:N2}'}" TextColor="{DynamicResource TextPrimaryColor}" FontAttributes="Bold" HorizontalOptions="End" VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                                <CollectionView.Footer>
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" Padding="10,10" BackgroundColor="{DynamicResource CardBackgroundColor}">
+                                        <BoxView Grid.ColumnSpan="2" Grid.Row="0" HeightRequest="1" BackgroundColor="{DynamicResource BorderColor}" Margin="0,0,0,10" />
+                                        
+                                        <Label Grid.Column="0" Grid.Row="1" Text="Subtotal:" HorizontalOptions="End" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding Order.Subtotal, StringFormat='${0:N2}'}" HorizontalOptions="End" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        
+                                        <Label Grid.Column="0" Grid.Row="2" Text="Tax:" HorizontalOptions="End" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding Order.Tax, StringFormat='${0:N2}'}" HorizontalOptions="End" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        
+                                        <Label Grid.Column="0" Grid.Row="3" Text="Tip:" HorizontalOptions="End" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        <Label Grid.Column="1" Grid.Row="3" Text="{Binding Order.TipAmount, StringFormat='${0:N2}'}" HorizontalOptions="End" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        
+                                        <Label Grid.Column="0" Grid.Row="4" Text="Total:" HorizontalOptions="End" FontAttributes="Bold" FontSize="16" TextColor="{DynamicResource TextPrimaryColor}" />
+                                        <Label Grid.Column="1" Grid.Row="4" Text="{Binding Order.TotalAmount, StringFormat='${0:N2}'}" HorizontalOptions="End" FontAttributes="Bold" FontSize="16" TextColor="{DynamicResource TextPrimaryColor}" />
+                                    </Grid>
+                                </CollectionView.Footer>
+                            </CollectionView>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Payment Actions -->
+                    <Frame Grid.Row="4" 
+                           Style="{StaticResource CardStyle}"
+                           IsVisible="{Binding Order.PaymentStatus, Converter={StaticResource PaymentStatusIsNotPaidConverter}}">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="15">
+                            <Label Grid.Row="0"
+                                   Text="Payment Actions"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                   
+                            <Button Grid.Row="1"
+                                    Text="Process Payment"
+                                    Command="{Binding ProcessPaymentCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}" />
+                        </Grid>
+                    </Frame>
+
+                    <!-- Back Button -->
+                    <Button Grid.Row="5"
+                            Text="Back to Orders"
+                            Command="{Binding GoBackCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}" />
+
+                    <!-- Loading Indicator -->
+                    <controls:LoadingIndicator Grid.RowSpan="6" 
+                                               IsLoading="{Binding IsLoading}"
+                                               LoadingText="Loading order details..." />
+                </Grid>
+            </ScrollView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,61 @@
+﻿using admin.Helpers;
+using admin.Services.Interfaces;
+using admin.Views;
+using Shared.Services.Interfaces;
+
+namespace admin;
+
+public partial class App : Application
+{
+    private readonly ILocalSettingsService _localSettingsService;
+    private readonly IThemeService _themeService;
+
+    public App(ILocalSettingsService localSettingsService, IThemeService themeService)
+    {
+        InitializeComponent();
+
+        _localSettingsService = localSettingsService;
+        _themeService = themeService;
+
+        // Set theme
+        var isDarkMode = _localSettingsService.GetSetting<bool>("DarkMode", false);
+        _themeService.SetTheme(isDarkMode);
+
+        // Check if user is logged in
+        var isLoggedIn = _localSettingsService.GetSetting<bool>("IsLoggedIn", false);
+        
+        if (isLoggedIn)
+        {
+            //MainPage = new AppShell();
+            MainPage = CreateAppShell();
+        }
+        else
+        {
+            //MainPage = new NavigationPage(new LoginPage());
+            MainPage = new NavigationPage(ServiceHelper.GetService<LoginPage>());
+        }
+    }
+    
+    public static AppShell CreateAppShell()
+    {
+        var auth = ServiceHelper.GetService<IAuthService>();
+        var settings = ServiceHelper.GetService<ISettingsService>();
+        return new AppShell(auth, settings);
+    }
+
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+    }
+
+    protected override void OnSleep()
+    {
+        base.OnSleep();
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+    }
+}

@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:admin.Controls"
+             xmlns:model="clr-namespace:Shared.Models.Order;assembly=Shared"
+             xmlns:viewModels="using:admin.ViewModels"
+             xmlns:converters1="using:admin.Converters"
+             x:Class="admin.Views.OrdersPage"
+             x:DataType="viewModels:OrdersViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters1:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter" />
+        <converters1:PaymentStatusToColorConverter x:Key="PaymentStatusToColorConverter" />
+        <converters1:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters1:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <Label Text="{Binding Title}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="White" />
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,*">
+            
+            <!-- Filters -->
+            <Grid Grid.Row="0" RowDefinitions="Auto,Auto" Padding="20,10" BackgroundColor="{DynamicResource CardBackgroundColor}">
+                <!-- Search Bar -->
+                <Frame Grid.Row="0" Padding="5" HasShadow="False" BorderColor="{DynamicResource BorderColor}" CornerRadius="5" Margin="0,0,0,10">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Grid.Column="0" Text="&#xf002;" FontFamily="FontAwesomeSolid" TextColor="{DynamicResource TextSecondaryColor}" VerticalOptions="Center" Margin="5,0" />
+                        <Entry Grid.Column="1" Text="{Binding SearchText}" Placeholder="Search orders..." VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+                
+                <!-- Filters -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto">
+                    <!-- Filter Toggle -->
+                    <Button Grid.Column="0" 
+                            Text="{Binding IsFilterByDate, Converter={StaticResource BoolToFilterTextConverter}, ConverterParameter='By Status|By Date'}"
+                            Command="{Binding ToggleFilterModeCommand}"
+                            BackgroundColor="{DynamicResource PrimaryColor}"
+                            TextColor="White"
+                            Padding="10,5"
+                            CornerRadius="5"
+                            Margin="0,0,10,0" />
+                    
+                    <!-- Filter Content -->
+                    <Grid Grid.Column="1" ColumnDefinitions="*,*" IsVisible="{Binding IsFilterByDate}">
+                        <DatePicker Grid.Column="0" Date="{Binding StartDate}" Format="MM/dd/yyyy" Margin="0,0,5,0" />
+                        <DatePicker Grid.Column="1" Date="{Binding EndDate}" Format="MM/dd/yyyy" Margin="5,0,0,0" />
+                    </Grid>
+                    
+                    <Picker Grid.Column="1" 
+                            IsVisible="{Binding IsFilterByDate, Converter={StaticResource InvertedBoolConverter}}"
+                            ItemsSource="{Binding OrderStatusOptions}" 
+                            SelectedItem="{Binding SelectedStatus}" 
+                            Title="Select Status" />
+                    
+                    <!-- Apply Button -->
+                    <Button Grid.Column="2" 
+                            Text="Apply"
+                            Command="{Binding ApplyFiltersCommand}"
+                            BackgroundColor="{DynamicResource AccentColor}"
+                            TextColor="White"
+                            Padding="10,5"
+                            CornerRadius="5"
+                            Margin="10,0,0,0" />
+                </Grid>
+            </Grid>
+            
+            <!-- Order List -->
+            <RefreshView Grid.Row="1" 
+                         IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding RefreshCommand}">
+                <Grid RowDefinitions="Auto,*">
+                    <!-- Status Bar -->
+                    <Grid Grid.Row="0" Padding="20,10">
+                        <Label Text="{Binding TotalOrders, StringFormat='Total Orders: {0}'}"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               FontAttributes="Bold" />
+                    </Grid>
+                    
+                    <!-- Orders List -->
+                    <CollectionView Grid.Row="1"
+                                    ItemsSource="{Binding Orders}"
+                                    Margin="20,0,20,20"
+                                    EmptyView="No orders found with the current filters">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Order">
+                                <Frame Style="{StaticResource CardStyle}" Margin="0,4,0,4">
+                                    <Grid RowDefinitions="Auto,Auto,Auto">
+                                        <!-- Header -->
+                                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0" 
+                                                   Text="{Binding Id, StringFormat='Order #{0}'}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="16"
+                                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                            
+                                            <Frame Grid.Column="1"
+                                                   BackgroundColor="{Binding Status, Converter={StaticResource OrderStatusToColorConverter}}"
+                                                   CornerRadius="15"
+                                                   Padding="10,5"
+                                                   HasShadow="False">
+                                                <Label Text="{Binding Status}"
+                                                       TextColor="White"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold" />
+                                            </Frame>
+                                        </Grid>
+                                        
+                                        <!-- Customer Info -->
+                                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                                            <VerticalStackLayout Grid.Column="0">
+                                                <Label Text="{Binding CustomerName}"
+                                                       FontSize="14"
+                                                       TextColor="{DynamicResource TextPrimaryColor}" />
+                                                <Label Text="{Binding CreatedAt, StringFormat='{0:MM/dd/yyyy HH:mm}'}"
+                                                       FontSize="12"
+                                                       TextColor="{DynamicResource TextSecondaryColor}" />
+                                                <Label Text="{Binding Type}"
+                                                       FontSize="12"
+                                                       TextColor="{DynamicResource TextSecondaryColor}" />
+                                            </VerticalStackLayout>
+                                            
+                                            <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+                                                <Label Text="{Binding TotalAmount, StringFormat='${0:N2}'}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16"
+                                                       TextColor="{DynamicResource TextPrimaryColor}"
+                                                       HorizontalOptions="End" />
+                                                <Frame BackgroundColor="{Binding PaymentStatus, Converter={StaticResource PaymentStatusToColorConverter}}"
+                                                       CornerRadius="15"
+                                                       Padding="10,3"
+                                                       HasShadow="False"
+                                                       HorizontalOptions="End">
+                                                    <Label Text="{Binding PaymentStatus}"
+                                                           TextColor="White"
+                                                           FontSize="10"
+                                                           FontAttributes="Bold" />
+                                                </Frame>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                        
+                                        <!-- Actions -->
+                                        <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,10,0,0">
+                                            <Button Grid.Column="0"
+                                                    Text="View Details"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:OrdersViewModel}}, Path=ViewOrderDetailsCommand}"
+                                                    CommandParameter="{Binding Id}"
+                                                    Style="{StaticResource PrimaryButtonStyle}"
+                                                    Margin="0,0,5,0" />
+                                            
+                                            <Button Grid.Column="1"
+                                                    Text="{Binding Status, Converter={StaticResource OrderStatusToNextActionConverter}}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:OrdersViewModel}}, Path=UpdateOrderStatusCommand}"
+                                                    CommandParameter="{Binding Id}"
+                                                    Style="{StaticResource SuccessButtonStyle}"
+                                                    Margin="5,0,0,0"
+                                                    IsVisible="{Binding Status, Converter={StaticResource OrderStatusToCanUpdateConverter}}" />
+                                        </Grid>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    
+                    <!-- Loading Indicator -->
+                    <controls:LoadingIndicator Grid.RowSpan="2" 
+                                               IsLoading="{Binding IsLoading}"
+                                               LoadingText="Loading orders..." />
+                </Grid>
+            </RefreshView>
+        </Grid>
+    </Grid>
+</ContentPage>

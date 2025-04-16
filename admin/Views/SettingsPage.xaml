@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:RestaurantAdmin.Controls"
+             xmlns:converters="clr-namespace:admin.Converters"
+             x:Class="admin.Views.SettingsPage"
+             x:DataType="viewmodels:SettingsViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <Label Text="{Binding Title}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="White" />
+        </Grid>
+
+        <!-- Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!-- Error Message -->
+                <Frame IsVisible="{Binding HasError}"
+                       BackgroundColor="{StaticResource ErrorColor}"
+                       BorderColor="Transparent"
+                       CornerRadius="8"
+                       Padding="16"
+                       Margin="0">
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="White"
+                           FontSize="14" />
+                </Frame>
+
+                <!-- User Profile Section -->
+                <Frame Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="User Profile"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                               
+                        <!-- User Info -->
+                        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*" RowSpacing="10" ColumnSpacing="15">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Username:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding UserName}" TextColor="{DynamicResource TextPrimaryColor}" />
+                            
+                            <Label Grid.Row="1" Grid.Column="0" Text="Email:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding UserEmail}" TextColor="{DynamicResource TextPrimaryColor}" />
+                            
+                            <Label Grid.Row="2" Grid.Column="0" Text="Role:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding UserRole}" TextColor="{DynamicResource TextPrimaryColor}" />
+                        </Grid>
+                        
+                        <!-- Change Password Button -->
+                        <Button Text="Change Password"
+                                Command="{Binding ChangePasswordCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- API Configuration -->
+                <Frame Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="API Configuration"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                               
+                        <!-- API URL -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="API Base URL"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding ApiBaseUrl}"
+                                   Placeholder="https://your-api-url.com/"
+                                   Keyboard="Url"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Save Button -->
+                        <Button Text="Save API URL"
+                                Command="{Binding SaveApiUrlCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- App Preferences -->
+                <Frame Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="App Preferences"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                               
+                        <!-- Dark Mode -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="Dark Mode"
+                                   TextColor="{DynamicResource TextPrimaryColor}"
+                                   VerticalOptions="Center" />
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding IsDarkMode}"
+                                    OnColor="{StaticResource PrimaryColor}"
+                                    ThumbColor="White"
+                                    Toggled="OnDarkModeToggled" />
+                        </Grid>
+                        
+                        <!-- Notifications -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="Real-time Notifications"
+                                   TextColor="{DynamicResource TextPrimaryColor}"
+                                   VerticalOptions="Center" />
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding NotificationsEnabled}"
+                                    OnColor="{StaticResource PrimaryColor}"
+                                    ThumbColor="White"
+                                    Toggled="OnNotificationsToggled" />
+                        </Grid>
+                        
+                        <!-- SignalR Status -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Real-time Connection Status:"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                <Frame Grid.Column="0"
+                                       BackgroundColor="{Binding SignalRConnected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Green|Red'}"
+                                       CornerRadius="15"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       Padding="0"
+                                       HasShadow="False"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding SignalRConnected, StringFormat='{0:Connected|Disconnected}'}"
+                                       TextColor="{DynamicResource TextPrimaryColor}"
+                                       VerticalOptions="Center" />
+                                <Button Grid.Column="2"
+                                        Text="Connect"
+                                        Command="{Binding ConnectSignalRCommand}"
+                                        IsVisible="{Binding SignalRConnected, Converter={StaticResource InvertedBoolConverter}}"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        WidthRequest="100" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- About -->
+                <Frame Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="About"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                               
+                        <Label Text="Restaurant Admin Panel"
+                               FontSize="16"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                               
+                        <Label Text="{Binding VersionInfo}"
+                               FontSize="14"
+                               TextColor="{DynamicResource TextSecondaryColor}" />
+                               
+                        <Label Text="© 2025 Restaurant Management System"
+                               FontSize="14"
+                               TextColor="{DynamicResource TextSecondaryColor}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Logout Button -->
+                <Button Text="Logout"
+                        Command="{Binding LogoutCommand}"
+                        Style="{StaticResource DangerButtonStyle}"
+                        Margin="0,20,0,40" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

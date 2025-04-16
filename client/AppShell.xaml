@@ -58,7 +58,7 @@
         <ShellContent ContentTemplate="{DataTemplate auth:ProfilePage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Settings" Icon="&#xf013;" Route="{x:Static routes:Routes.Settings}" FlyoutItemIsVisible="{Binding IsLoggedIn}">
+    <FlyoutItem Title="Settings" Icon="&#xf013;" Route="{x:Static routes:Routes.Login}" FlyoutItemIsVisible="{Binding IsLoggedIn}">
         <ShellContent ContentTemplate="{DataTemplate settings:SettingsPage}" />
     </FlyoutItem>
 

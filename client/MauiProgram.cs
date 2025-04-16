@@ -38,8 +38,8 @@ namespace Client
                     fonts.AddFont("FontAwesome-Solid.ttf", "FontAwesomeSolid");
                     fonts.AddFont("FontAwesome-Brands.ttf", "FontAwesomeBrands");
                 });
-
-
+            
+            
             // Register Services
             RegisterServices(builder.Services);
             

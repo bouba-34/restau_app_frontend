@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="admin.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:RestaurantAdmin.Views"
+    xmlns:views1="using:admin.Views"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutWidth="250"
+    Shell.BackgroundColor="{DynamicResource AppBackgroundColor}"
+    Shell.ForegroundColor="{DynamicResource TextPrimaryColor}"
+    Shell.TitleColor="{DynamicResource TextPrimaryColor}"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <Shell.FlyoutHeaderTemplate>
+        <DataTemplate>
+            <Grid HeightRequest="150" 
+                  BackgroundColor="{DynamicResource PrimaryColor}">
+                <Image Source="restaurant_logo.png"
+                       HeightRequest="80"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+                <VerticalStackLayout VerticalOptions="End"
+                                     Padding="20,0,0,20">
+                    <Label Text="Restaurant Admin"
+                           FontSize="20"
+                           TextColor="White"
+                           FontAttributes="Bold" />
+                    <Label Text="{Binding Username}"
+                           TextColor="White"
+                           FontSize="14" />
+                </VerticalStackLayout>
+            </Grid>
+        </DataTemplate>
+    </Shell.FlyoutHeaderTemplate>
+
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid ColumnDefinitions="30,*" 
+                  Padding="20,10">
+                <Label Grid.Column="0"
+                       Text="{Binding Icon}"
+                       FontFamily="FontAwesomeSolid"
+                       FontSize="18"
+                       TextColor="{DynamicResource TextPrimaryColor}"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="16"
+                       TextColor="{DynamicResource TextPrimaryColor}"
+                       VerticalOptions="Center" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <FlyoutItem Title="Dashboard" Icon="&#xf015;" Route="Dashboard">
+        <ShellContent ContentTemplate="{DataTemplate views1:DashboardPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Orders" Icon="&#xf0d1;" Route="Orders">
+        <ShellContent ContentTemplate="{DataTemplate views1:OrdersPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Reservations" Icon="&#xf073;" Route="Reservations">
+        <ShellContent ContentTemplate="{DataTemplate views1:ReservationsPage}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Menu Management" Icon="&#xf0f5;" Route="Menu">
+        <ShellContent ContentTemplate="{DataTemplate views1:MenuManagementPage}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Staff Management" Icon="&#xf500;" Route="Staff">
+        <ShellContent ContentTemplate="{DataTemplate views1:StaffManagementPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings" Icon="&#xf013;" Route="Settings">
+        <ShellContent ContentTemplate="{DataTemplate views1:SettingsPage}" />
+    </FlyoutItem>
+
+    <Shell.FlyoutFooterTemplate>
+        <DataTemplate>
+            <StackLayout Padding="20,20">
+                <Button Text="Logout"
+                        Command="{Binding LogoutCommand}"
+                        BackgroundColor="{DynamicResource PrimaryColor}"
+                        TextColor="White"
+                        HorizontalOptions="Fill" />
+            </StackLayout>
+        </DataTemplate>
+    </Shell.FlyoutFooterTemplate>
+
+</Shell>

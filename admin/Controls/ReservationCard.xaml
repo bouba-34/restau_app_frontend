@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:Shared.Models.Reservation;assembly=Shared"
+             xmlns:converters="clr-namespace:admin.Converters"
+             x:Class="admin.Controls.ReservationCard"
+             x:Name="this">
+
+    <ContentView.Resources>
+        <converters:ReservationStatusToColorConverter x:Key="ReservationStatusToColorConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </ContentView.Resources>
+
+    <Frame Style="{StaticResource CardStyle}" Margin="0,4,0,4">
+        <Grid RowDefinitions="Auto,Auto,Auto">
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                <Label Grid.Column="0" 
+                       Text="{Binding Reservation.CustomerName, Source={x:Reference this}}"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       TextColor="{DynamicResource TextPrimaryColor}" />
+                
+                <Frame Grid.Column="1"
+                       BackgroundColor="{Binding Reservation.Status, Source={x:Reference this}, Converter={StaticResource ReservationStatusToColorConverter}}"
+                       CornerRadius="15"
+                       Padding="10,5"
+                       HasShadow="False">
+                    <Label Text="{Binding Reservation.Status, Source={x:Reference this}}"
+                           TextColor="White"
+                           FontSize="12"
+                           FontAttributes="Bold" />
+                </Frame>
+            </Grid>
+            
+            <!-- Reservation Details -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                <VerticalStackLayout Grid.Column="0">
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="&#xf133;"
+                               FontFamily="FontAwesomeSolid"
+                               TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"
+                               Margin="0,0,5,0" />
+                        <Label Text="{Binding Reservation.ReservationDate, Source={x:Reference this}, StringFormat='{0:MM/dd/yyyy}'}"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                    
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="&#xf017;"
+                               FontFamily="FontAwesomeSolid"
+                               TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"
+                               Margin="0,0,5,0" />
+                        <Label Text="{Binding Reservation.ReservationTime, Source={x:Reference this}, StringFormat='{0}'}"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                    
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="&#xf0c0;"
+                               FontFamily="FontAwesomeSolid"
+                               TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"
+                               Margin="0,0,5,0" />
+                        <Label Text="{Binding Reservation.PartySize, Source={x:Reference this}, StringFormat='{0} guests'}"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                </VerticalStackLayout>
+                
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                        <Label Text="&#xf022;"
+                               FontFamily="FontAwesomeSolid"
+                               TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"
+                               Margin="0,0,5,0" />
+                        <Label Text="{Binding Reservation.TableNumber, Source={x:Reference this}, StringFormat='Table {0}'}"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                </VerticalStackLayout>
+            </Grid>
+            
+            <!-- Actions -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,10,0,0">
+                <Button Grid.Column="0"
+                        Text="View Details"
+                        Command="{Binding ViewDetailsCommand, Source={x:Reference this}}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Margin="0,0,5,0" />
+                
+                <Button Grid.Column="1"
+                        Text="{Binding NextActionText, Source={x:Reference this}}"
+                        Command="{Binding UpdateStatusCommand, Source={x:Reference this}}"
+                        Style="{StaticResource SuccessButtonStyle}"
+                        Margin="5,0,0,0"
+                        IsVisible="{Binding ShowNextActionButton, Source={x:Reference this}}" />
+            </Grid>
+        </Grid>
+    </Frame>
+</ContentView>

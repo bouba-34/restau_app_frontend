@@ -36,7 +36,7 @@ namespace Client.ViewModels.Menu
             IMenuService menuService) 
             : base(navigationService, dialogService)
         {
-            _menuService = menuService;
+            _menuService = menuService ?? throw new ArgumentNullException(nameof(menuService));
             
             Title = "Menu";
             Categories = new ObservableCollection<MenuCategory>();
@@ -46,7 +46,16 @@ namespace Client.ViewModels.Menu
         
         public override async Task InitializeAsync(object parameter = null)
         {
-            await RefreshDataAsync();
+            //await RefreshDataAsync();
+            try
+            {
+                await RefreshDataAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error initializing menu: {ex}");
+                // Handle exception gracefully
+            }
         }
         
         [RelayCommand]

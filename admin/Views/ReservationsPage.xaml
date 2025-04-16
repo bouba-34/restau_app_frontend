@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:admin.Controls"
+             xmlns:converters="clr-namespace:admin.Converters"
+             xmlns:model="clr-namespace:Shared.Models.Reservation;assembly=Shared"
+             x:Class="admin.Views.ReservationsPage"
+             x:DataType="viewmodels:ReservationsViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters:ReservationStatusToColorConverter x:Key="ReservationStatusToColorConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters:BoolToFilterTextConverter x:Key="BoolToFilterTextConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <Label Text="{Binding Title}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="White" />
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,*">
+            
+            <!-- Filters -->
+            <Grid Grid.Row="0" RowDefinitions="Auto,Auto" Padding="20,10" BackgroundColor="{DynamicResource CardBackgroundColor}">
+                <!-- Search Bar -->
+                <Frame Grid.Row="0" Padding="5" HasShadow="False" BorderColor="{DynamicResource BorderColor}" CornerRadius="5" Margin="0,0,0,10">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Grid.Column="0" Text="&#xf002;" FontFamily="FontAwesomeSolid" TextColor="{DynamicResource TextSecondaryColor}" VerticalOptions="Center" Margin="5,0" />
+                        <Entry Grid.Column="1" Text="{Binding SearchText}" Placeholder="Search reservations..." VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+                
+                <!-- Filters -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto">
+                    <!-- Filter Toggle -->
+                    <Button Grid.Column="0" 
+                            Text="{Binding IsFilterByDate, Converter={StaticResource BoolToFilterTextConverter}, ConverterParameter='By Status|By Date'}"
+                            Command="{Binding ToggleFilterModeCommand}"
+                            BackgroundColor="{DynamicResource PrimaryColor}"
+                            TextColor="White"
+                            Padding="10,5"
+                            CornerRadius="5"
+                            Margin="0,0,10,0" />
+                    
+                    <!-- Filter Content -->
+                    <DatePicker Grid.Column="1" 
+                                IsVisible="{Binding IsFilterByDate}"
+                                Date="{Binding SelectedDate}" 
+                                Format="MM/dd/yyyy" />
+                    
+                    <Picker Grid.Column="1" 
+                            IsVisible="{Binding IsFilterByDate, Converter={StaticResource InvertedBoolConverter}}"
+                            ItemsSource="{Binding ReservationStatusOptions}" 
+                            SelectedItem="{Binding SelectedStatus}" 
+                            Title="Select Status" />
+                    
+                    <!-- Apply Button -->
+                    <Button Grid.Column="2" 
+                            Text="Apply"
+                            Command="{Binding ApplyFiltersCommand}"
+                            BackgroundColor="{DynamicResource AccentColor}"
+                            TextColor="White"
+                            Padding="10,5"
+                            CornerRadius="5"
+                            Margin="10,0,0,0" />
+                </Grid>
+            </Grid>
+            
+            <!-- Reservations List -->
+            <RefreshView Grid.Row="1" 
+                         IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding RefreshCommand}">
+                <Grid RowDefinitions="Auto,*">
+                    <!-- Status Bar -->
+                    <Grid Grid.Row="0" Padding="20,10">
+                        <Label Text="{Binding TotalReservations, StringFormat='Total Reservations: {0}'}"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               FontAttributes="Bold" />
+                    </Grid>
+                    
+                    <!-- Reservations List -->
+                    <CollectionView Grid.Row="1"
+                                    ItemsSource="{Binding Reservations}"
+                                    Margin="20,0,20,20"
+                                    EmptyView="No reservations found with the current filters">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Reservation">
+                                <controls:ReservationCard Reservation="{Binding}"
+                                                          ViewDetailsCommand="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ReservationsViewModel}}, Path=ViewReservationDetailsCommand}"
+                                                          UpdateStatusCommand="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ReservationsViewModel}}, Path=UpdateReservationStatusCommand}" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    
+                    <!-- Loading Indicator -->
+                    <controls:LoadingIndicator Grid.RowSpan="2" 
+                                               IsLoading="{Binding IsLoading}"
+                                               LoadingText="Loading reservations..." />
+                </Grid>
+            </RefreshView>
+        </Grid>
+    </Grid>
+</ContentPage>

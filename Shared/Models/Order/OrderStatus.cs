@@ -12,9 +12,9 @@
     
     public enum OrderType
     {
-        DineIn,
-        TakeOut,
-        Delivery
+        DineIn = 0,
+        TakeOut = 1,
+        Delivery = 2
     }
     
     public enum PaymentStatus

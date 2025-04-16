@@ -36,12 +36,14 @@ namespace Client.Services
 
             if (route.StartsWith("//"))
             {
-                Shell.Current.GoToAsync(route, safeParams);
+                Console.WriteLine($"🔁 Absolute navigation to {route} (resetting stack)");
             }
             else
             {
-                Shell.Current.GoToAsync(route, safeParams);
+                Console.WriteLine($"➡️ Relative navigation to {route} (pushing to stack)");
             }
+
+            Shell.Current.GoToAsync(route, safeParams);
         }
         
         private static async Task InvokeOnMainThreadAsync(Action action)

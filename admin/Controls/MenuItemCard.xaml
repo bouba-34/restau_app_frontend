@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:Shared.Models.Menu;assembly=Shared"
+             xmlns:converters="clr-namespace:admin.Converters"
+             x:Class="admin.Controls.MenuItemCard"
+             x:Name="this">
+
+    <ContentView.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </ContentView.Resources>
+
+    <Frame Style="{StaticResource CardStyle}" Margin="0">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+            <!-- Image -->
+            <Image Grid.Row="0"
+                   Source="{Binding MenuItem.ImageUrl, Source={x:Reference this}}"
+                   HeightRequest="120"
+                   Aspect="AspectFill"
+                   VerticalOptions="Fill"
+                   HorizontalOptions="Fill">
+                <Image.Clip>
+                    <RoundRectangleGeometry Rect="0,0,1000,1000" CornerRadius="8" />
+                </Image.Clip>
+            </Image>
+            
+            <!-- Category & Featured Badge -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="5">
+                <Frame Grid.Column="0"
+                       BackgroundColor="{DynamicResource PrimaryColor}"
+                       CornerRadius="15"
+                       Padding="10,3"
+                       HasShadow="False"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Start">
+                    <Label Text="{Binding MenuItem.CategoryName, Source={x:Reference this}}"
+                           TextColor="White"
+                           FontSize="10"
+                           FontAttributes="Bold" />
+                </Frame>
+                
+                <Frame Grid.Column="1"
+                       BackgroundColor="{StaticResource WarningColor}"
+                       CornerRadius="15"
+                       Padding="5"
+                       HasShadow="False"
+                       HorizontalOptions="End"
+                       VerticalOptions="Start"
+                       IsVisible="{Binding MenuItem.IsFeatured, Source={x:Reference this}}">
+                    <Label Text="★"
+                           TextColor="White"
+                           FontSize="12"
+                           FontAttributes="Bold" />
+                </Frame>
+            </Grid>
+            
+            <!-- Title & Price -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,10,0,5">
+                <Label Grid.Column="0"
+                       Text="{Binding MenuItem.Name, Source={x:Reference this}}"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       TextColor="{DynamicResource TextPrimaryColor}" />
+                
+                <Label Grid.Column="1"
+                       Text="{Binding MenuItem.Price, Source={x:Reference this}, StringFormat='${0:N2}'}"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       TextColor="{DynamicResource PrimaryColor}" />
+            </Grid>
+            
+            <!-- Description -->
+            <Label Grid.Row="2"
+                   Text="{Binding MenuItem.Description, Source={x:Reference this}}"
+                   TextColor="{DynamicResource TextSecondaryColor}"
+                   FontSize="12"
+                   MaxLines="2"
+                   LineBreakMode="TailTruncation" />
+            
+            <!-- Actions -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,*" Margin="0,10,0,0">
+                <Button Grid.Column="0"
+                        Text="Edit"
+                        Command="{Binding EditCommand, Source={x:Reference this}}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Margin="0,0,5,0" />
+                
+                <Button Grid.Column="1"
+                        Text="{Binding MenuItem.IsAvailable, Source={x:Reference this}, StringFormat='{0:Available|Unavailable}'}"
+                        Command="{Binding ToggleAvailabilityCommand, Source={x:Reference this}}"
+                        BackgroundColor="{Binding MenuItem.IsAvailable, Source={x:Reference this}, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Green|Red'}"
+                        TextColor="White"
+                        Margin="5,0,0,0" />
+            </Grid>
+        </Grid>
+    </Frame>
+</ContentView>

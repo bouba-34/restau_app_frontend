@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:RestaurantAdmin.ViewModels"
+             xmlns:controls="clr-namespace:RestaurantAdmin.Controls"
+             xmlns:viewModels="using:admin.ViewModels"
+             x:Class="admin.Views.LoginPage"
+             x:DataType="viewModels:LoginViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <Grid RowDefinitions="*,Auto,*"
+          RowSpacing="0">
+
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0,1">
+                <GradientStop Color="{DynamicResource AppBackgroundColor}" Offset="0.6" />
+                <GradientStop Color="{DynamicResource PrimaryLightColor}" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!-- Logo Section -->
+        <VerticalStackLayout Grid.Row="0"
+                             VerticalOptions="End"
+                             HorizontalOptions="Center"
+                             Spacing="10"
+                             Margin="0,0,0,20">
+            <Image Source="restaurant_logo.png"
+                   HeightRequest="100"
+                   WidthRequest="100"
+                   Aspect="AspectFit" />
+            <Label Text="Restaurant Admin"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource TextPrimaryColor}"
+                   HorizontalOptions="Center" />
+            <Label Text="Control Panel"
+                   FontSize="18"
+                   TextColor="{DynamicResource TextSecondaryColor}"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Login Form -->
+        <Frame Grid.Row="1"
+               Margin="20"
+               Padding="20"
+               HasShadow="True"
+               CornerRadius="10"
+               BackgroundColor="{DynamicResource CardBackgroundColor}"
+               BorderColor="{DynamicResource BorderColor}">
+
+            <VerticalStackLayout Spacing="20">
+                <Label Text="Login to your account"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource TextPrimaryColor}"
+                       HorizontalOptions="Center" />
+
+                <!-- Error Message -->
+                <Frame IsVisible="{Binding HasError}"
+                       BackgroundColor="{StaticResource ErrorColor}"
+                       BorderColor="Transparent"
+                       CornerRadius="5"
+                       Padding="10"
+                       Margin="0">
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="White"
+                           FontSize="14"
+                           HorizontalTextAlignment="Center" />
+                </Frame>
+
+                <!-- Username -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Username"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextPrimaryColor}" />
+                    <Frame Padding="5"
+                           CornerRadius="5"
+                           HasShadow="False"
+                           BorderColor="{DynamicResource BorderColor}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Grid.Column="0"
+                                   Text="&#xf007;"
+                                   FontFamily="FontAwesomeSolid"
+                                   TextColor="{DynamicResource TextSecondaryColor}"
+                                   VerticalOptions="Center"
+                                   Margin="5,0" />
+                            <Entry Grid.Column="1"
+                                   Text="{Binding Username}"
+                                   Placeholder="Enter your username"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Frame>
+                </VerticalStackLayout>
+
+                <!-- Password -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Password"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextPrimaryColor}" />
+                    <Frame Padding="5"
+                           CornerRadius="5"
+                           HasShadow="False"
+                           BorderColor="{DynamicResource BorderColor}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Grid.Column="0"
+                                   Text="&#xf023;"
+                                   FontFamily="FontAwesomeSolid"
+                                   TextColor="{DynamicResource TextSecondaryColor}"
+                                   VerticalOptions="Center"
+                                   Margin="5,0" />
+                            <Entry Grid.Column="1"
+                                   Text="{Binding Password}"
+                                   Placeholder="Enter your password"
+                                   IsPassword="True"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Frame>
+                </VerticalStackLayout>
+
+                <!-- Remember Me -->
+                <Grid ColumnDefinitions="Auto,*">
+                    <CheckBox Grid.Column="0"
+                              IsChecked="{Binding RememberMe}"
+                              Color="{StaticResource PrimaryColor}" />
+                    <Label Grid.Column="1"
+                           Text="Remember me"
+                           VerticalOptions="Center"
+                           TextColor="{DynamicResource TextPrimaryColor}" />
+                </Grid>
+
+                <!-- Login Button -->
+                <Button Text="Login"
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsLoggingIn, Converter={StaticResource InvertedBoolConverter}}"
+                        BackgroundColor="{StaticResource PrimaryColor}"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="5"
+                        HeightRequest="50" />
+
+                <ActivityIndicator IsRunning="{Binding IsLoggingIn}"
+                                   IsVisible="{Binding IsLoggingIn}"
+                                   Color="{StaticResource PrimaryColor}"
+                                   HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Footer -->
+        <Label Grid.Row="2"
+               Text="© 2025 Restaurant Management System"
+               TextColor="{DynamicResource TextSecondaryColor}"
+               FontSize="12"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,20" />
+    </Grid>
+</ContentPage>

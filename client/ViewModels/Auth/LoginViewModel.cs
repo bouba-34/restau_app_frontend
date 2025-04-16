@@ -112,7 +112,7 @@ namespace Client.ViewModels.Auth
                     }
                     
                     // Navigate to main page
-                    await NavigationService.NavigateToAsync(Routes.Menu);
+                    await NavigationService.NavigateToAsync($"//{Routes.Menu}");
                     
                     // Show welcome message
                     await DialogService.DisplayToastAsync($"Welcome, {authResponse.Username}!");
@@ -132,7 +132,7 @@ namespace Client.ViewModels.Auth
         private async Task NavigateToRegisterAsync()
         {
             //Console.WriteLine("going to register page...");
-            await NavigationService.NavigateToAsync(Routes.Register);
+            await NavigationService.NavigateToAsync($"//{Routes.Register}");
         }
         
         [RelayCommand]
@@ -155,7 +155,7 @@ namespace Client.ViewModels.Auth
             if (_authService.HasValidSession())
             {
                 // Navigate to main page
-                NavigationService.NavigateToAsync(Routes.Menu);
+                NavigationService.NavigateToAsync($"//{Routes.Menu}");
             }
         }
     }

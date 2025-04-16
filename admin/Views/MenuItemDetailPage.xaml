@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:admin.Controls"
+             xmlns:converters="clr-namespace:admin.Converters"
+             x:Class="admin.Views.MenuItemDetailPage"
+             x:DataType="viewmodels:MenuItemDetailViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <VerticalStackLayout>
+                <Label Text="{Binding Title}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="White" />
+                <Label Text="{Binding Subtitle}"
+                       IsVisible="{Binding Subtitle, Converter={StaticResource BoolToVisibilityConverter}}"
+                       FontSize="16"
+                       TextColor="White"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Content -->
+        <ScrollView Grid.Row="1">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" Padding="20" RowSpacing="20">
+
+                <!-- Error Message -->
+                <Frame Grid.Row="0" 
+                       IsVisible="{Binding HasError}"
+                       BackgroundColor="{StaticResource ErrorColor}"
+                       BorderColor="Transparent"
+                       CornerRadius="8"
+                       Padding="16"
+                       Margin="0">
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="White"
+                           FontSize="14" />
+                </Frame>
+                
+                <!-- Validation Errors -->
+                <Frame Grid.Row="0" 
+                       IsVisible="{Binding HasValidationErrors}"
+                       BackgroundColor="{StaticResource WarningColor}"
+                       BorderColor="Transparent"
+                       CornerRadius="8"
+                       Padding="16"
+                       Margin="0">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Please fix the following errors:"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               FontSize="14" />
+                        <Label Text="{Binding ValidationErrors}"
+                               TextColor="White"
+                               FontSize="14" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Menu Item Form -->
+                <Frame Grid.Row="1" 
+                       Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Basic Information"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                        
+                        <!-- Name -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Name *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding Name}"
+                                   Placeholder="Enter item name"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Category -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Category *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Picker ItemsSource="{Binding Categories}"
+                                    SelectedItem="{Binding SelectedCategory}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    Title="Select a category" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Description -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Description"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Editor Text="{Binding Description}"
+                                    Placeholder="Enter description"
+                                    AutoSize="TextChanges"
+                                    MaxLength="500"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Price -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Price *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding Price}"
+                                   Placeholder="0.00"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+
+                        <!-- Preparation Time -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Preparation Time (minutes) *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding PreparationTimeMinutes}"
+                                   Placeholder="15"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Discount -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Discount (%)"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding DiscountPercentage}"
+                                   Placeholder="0"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Additional Info -->
+                <Frame Grid.Row="2" 
+                       Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Additional Information"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                        
+                        <!-- Dietary Options -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Dietary Options"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                                <CheckBox Grid.Column="0" IsChecked="{Binding IsVegetarian}" />
+                                <Label Grid.Column="0" Text="Vegetarian" VerticalOptions="Center" Margin="40,0,0,0" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <CheckBox Grid.Column="1" IsChecked="{Binding IsVegan}" />
+                                <Label Grid.Column="1" Text="Vegan" VerticalOptions="Center" Margin="40,0,0,0" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <CheckBox Grid.Column="2" IsChecked="{Binding IsGlutenFree}" />
+                                <Label Grid.Column="2" Text="Gluten Free" VerticalOptions="Center" Margin="40,0,0,0" TextColor="{DynamicResource TextPrimaryColor}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                        
+                        <!-- Ingredients -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Ingredients (comma separated)"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Editor Text="{Binding Ingredients}"
+                                    Placeholder="E.g. Flour, Sugar, Eggs"
+                                    AutoSize="TextChanges"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Allergens -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Allergens (comma separated)"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Editor Text="{Binding Allergens}"
+                                    Placeholder="E.g. Gluten, Dairy, Nuts"
+                                    AutoSize="TextChanges"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Calories -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Calories"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding Calories}"
+                                   Placeholder="0"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Featured -->
+                        <HorizontalStackLayout Spacing="5">
+                            <CheckBox IsChecked="{Binding IsFeatured}" />
+                            <Label Text="Featured Item" 
+                                   VerticalOptions="Center" 
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </HorizontalStackLayout>
+                        
+                        <!-- Available -->
+                        <HorizontalStackLayout Spacing="5">
+                            <CheckBox IsChecked="{Binding IsAvailable}" />
+                            <Label Text="Available" 
+                                   VerticalOptions="Center" 
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Image Upload -->
+                <Frame Grid.Row="3" 
+                       Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Menu Item Image"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                        
+                        <!-- Current Image Preview -->
+                        <Image Source="{Binding ImageUrl}"
+                               HeightRequest="200"
+                               WidthRequest="200"
+                               Aspect="AspectFill"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+                            <Image.Clip>
+                                <RoundRectangleGeometry Rect="0,0,1000,1000" CornerRadius="8" />
+                            </Image.Clip>
+                        </Image>
+                        
+                        <!-- Image Upload Button -->
+                        <Button Text="Select Image"
+                                Command="{Binding SelectImageCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                        
+                        <!-- Selected File Name -->
+                        <Label Text="{Binding ImageUrl}"
+                               TextColor="{DynamicResource TextSecondaryColor}"
+                               HorizontalOptions="Center"
+                               IsVisible="{Binding ImageUrl, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Actions -->
+                <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Text="Cancel"
+                            Command="{Binding CancelCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}" />
+                            
+                    <Button Grid.Column="1"
+                            Text="Save"
+                            Command="{Binding SaveMenuItemCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                </Grid>
+                
+                <!-- Delete Button (only for existing items) -->
+                <Button Grid.Row="5"
+                        Text="Delete Item"
+                        Command="{Binding DeleteMenuItemCommand}"
+                        Style="{StaticResource DangerButtonStyle}"
+                        IsVisible="{Binding IsNew, Converter={StaticResource InvertedBoolConverter}}"
+                        Margin="0,10,0,0" />
+
+                <!-- Loading Indicator -->
+                <controls:LoadingIndicator Grid.RowSpan="6" 
+                                           IsLoading="{Binding IsLoading}"
+                                           LoadingText="Processing..." />
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

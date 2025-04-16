@@ -25,7 +25,31 @@ namespace Shared.Services.Helpers
                 WriteIndented = true
             };
             
-            SetupHttpClient();
+            // Only set the BaseAddress if it's not already set
+            if (_httpClient.BaseAddress == null)
+            {
+                var baseUrl = _settingsService.ApiBaseUrl;
+                _httpClient.BaseAddress = new Uri(baseUrl);
+            }
+        
+            // Set up headers
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        
+            // Set authorization if token exists
+            var token = _settingsService.AuthToken;
+            if (!string.IsNullOrEmpty(token))
+            {
+                // Only set Authorization if it's not already set with the same token
+                var existingAuth = _httpClient.DefaultRequestHeaders.Authorization;
+                if (existingAuth == null || existingAuth.Parameter != token)
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = 
+                        new AuthenticationHeaderValue("Bearer", token);
+                }
+            }
+            
+            //SetupHttpClient();
         }
 
         private void SetupHttpClient()
@@ -57,15 +81,15 @@ namespace Shared.Services.Helpers
 
         protected async Task<T> PostAsync<T>(string endpoint, object data)
         {
-            //Console.WriteLine($"post request to {endpoint}");
+            Console.WriteLine($"post request to {endpoint}");
             try
             {
                 var jsonContent = JsonHelper.Serialize(data);
-                //Console.WriteLine($"to api: {jsonContent}");
+                Console.WriteLine($"to order api: {jsonContent}");
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                //Console.WriteLine($"to api content: {content}");
+                Console.WriteLine($"to api content: {content}");
                 var response = await _httpClient.PostAsync(endpoint, content);
-                //Console.WriteLine($"final response: {response}");
+                Console.WriteLine($"final response: {response}");
                 return await HandleResponse<T>(response);
             }
             catch (Exception ex)
