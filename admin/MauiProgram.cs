@@ -98,6 +98,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ISettingsService, SettingsService>();
         builder.Services.AddSingleton<ICacheService, CacheService>();
         builder.Services.AddSingleton<ISignalRService, SignalRService>();
+        builder.Services.AddSingleton<IReportService, ReportService>();
 
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IMenuService, MenuService>();
@@ -105,6 +106,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<IReservationService, ReservationService>();
         builder.Services.AddSingleton<INotificationService, NotificationService>();
         builder.Services.AddSingleton<IUserService, UserService>();
+        
+        // Register AppShell and its dependencies
+        builder.Services.AddSingleton<AppShell>();
 
         // Register pages and view models
         RegisterPagesAndViewModels(builder.Services);
@@ -112,12 +116,16 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-        ServiceHelper.Initialize(builder.Build().Services);
-        return builder.Build();
+        /*ServiceHelper.Initialize(builder.Build().Services);
+        return builder.Build();*/
+        var app = builder.Build();
+        ServiceHelper.Initialize(app.Services);
+        return app;
     }
 
     private static void RegisterPagesAndViewModels(IServiceCollection services)
     {
+        Console.WriteLine("RegisterPagesAndViewModels");
         // Login
         services.AddTransient<LoginPage>();
         services.AddTransient<LoginViewModel>();

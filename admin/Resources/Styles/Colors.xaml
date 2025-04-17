@@ -56,29 +56,5 @@
     <Color x:Key="TextSecondaryColor">#757575</Color>
     <Color x:Key="BorderColor">#E0E0E0</Color>
     <Color x:Key="SeparatorColor">#E0E0E0</Color>
-
-    <!-- Application Colors (AppThemeBinding) -->
-    <AppThemeBinding x:Key="AppBackgroundColor"
-                     Light="{StaticResource LightBackgroundColor}"
-                     Dark="{StaticResource DarkBackgroundColor}" />
     
-    <AppThemeBinding x:Key="CardBackgroundColor"
-                     Light="{StaticResource LightCardColor}"
-                     Dark="{StaticResource DarkCardColor}" />
-    
-    <AppThemeBinding x:Key="TextPrimaryColor"
-                     Light="{StaticResource LightTextColor}"
-                     Dark="{StaticResource DarkTextColor}" />
-    
-    <AppThemeBinding x:Key="TextSecondaryColor"
-                     Light="#757575"
-                     Dark="#AAAAAA" />
-    
-    <AppThemeBinding x:Key="BorderColor"
-                     Light="{StaticResource LightBorderColor}"
-                     Dark="{StaticResource DarkBorderColor}" />
-    
-    <AppThemeBinding x:Key="SeparatorColor"
-                     Light="{StaticResource LightBorderColor}"
-                     Dark="{StaticResource DarkBorderColor}" />
 </ResourceDictionary>

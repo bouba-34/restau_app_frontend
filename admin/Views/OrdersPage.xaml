@@ -17,6 +17,7 @@
         <converters1:PaymentStatusToColorConverter x:Key="PaymentStatusToColorConverter" />
         <converters1:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters1:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters1:BoolToFilterTextConverter x:Key="BoolToFilterTextConverter" />
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,*">

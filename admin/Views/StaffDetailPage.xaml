@@ -1,9 +1,221 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="admin.Views.StaffDetailPage">
-    <ContentPage.Content>
-        
-    </ContentPage.Content>
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:admin.Controls"
+             xmlns:converters="clr-namespace:admin.Converters"
+             x:Class="admin.Views.StaffDetailPage"
+             x:DataType="viewmodels:StaffDetailViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <VerticalStackLayout>
+                <Label Text="{Binding Title}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="White" />
+                <Label Text="{Binding Subtitle}"
+                       FontSize="16"
+                       TextColor="White"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Content -->
+        <ScrollView Grid.Row="1">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" Padding="20" RowSpacing="20">
+
+                <!-- Error Message -->
+                <Frame Grid.Row="0" 
+                       IsVisible="{Binding HasError}"
+                       BackgroundColor="{StaticResource ErrorColor}"
+                       BorderColor="Transparent"
+                       CornerRadius="8"
+                       Padding="16"
+                       Margin="0">
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="White"
+                           FontSize="14" />
+                </Frame>
+                
+                <!-- Validation Errors -->
+                <Frame Grid.Row="0" 
+                       IsVisible="{Binding HasValidationErrors}"
+                       BackgroundColor="{StaticResource WarningColor}"
+                       BorderColor="Transparent"
+                       CornerRadius="8"
+                       Padding="16"
+                       Margin="0">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Please fix the following errors:"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               FontSize="14" />
+                        <Label Text="{Binding ValidationErrors}"
+                               TextColor="White"
+                               FontSize="14" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Staff Information Form -->
+                <Frame Grid.Row="1" 
+                       Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Staff Information"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                        
+                        <!-- Username -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Username *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding Username}"
+                                   Placeholder="Enter username"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}"
+                                   IsEnabled="{Binding IsNew}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Email -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Email *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding Email}"
+                                   Placeholder="Enter email address"
+                                   Keyboard="Email"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Phone -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Phone Number"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding PhoneNumber}"
+                                   Placeholder="Enter phone number"
+                                   Keyboard="Telephone"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Role -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Role *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Picker ItemsSource="{Binding UserTypeOptions}"
+                                    SelectedItem="{Binding SelectedUserType}"
+                                    Title="Select role" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Password Section (only for new staff) -->
+                <Frame Grid.Row="2" 
+                       Style="{StaticResource CardStyle}"
+                       IsVisible="{Binding IsNew}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Set Password"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                        
+                        <!-- Password -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Password *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding Password}"
+                                   Placeholder="Enter password"
+                                   IsPassword="True"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                        
+                        <!-- Confirm Password -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Confirm Password *"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                            <Entry Text="{Binding ConfirmPassword}"
+                                   Placeholder="Confirm password"
+                                   IsPassword="True"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Account Status (only for existing staff) -->
+                <Frame Grid.Row="3" 
+                       Style="{StaticResource CardStyle}"
+                       IsVisible="{Binding IsNew, Converter={StaticResource InvertedBoolConverter}}">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Account Status"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="{DynamicResource TextPrimaryColor}" />
+                        
+                        <!-- Active Status -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="Active Account"
+                                   TextColor="{DynamicResource TextPrimaryColor}"
+                                   VerticalOptions="Center" />
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding IsActive}"
+                                    OnColor="{StaticResource SuccessColor}"
+                                    ThumbColor="White" />
+                        </Grid>
+                        
+                        <!-- Reset Password Button -->
+                        <Button Text="Reset Password"
+                                Command="{Binding ResetPasswordCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Actions -->
+                <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Text="Cancel"
+                            Command="{Binding CancelCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}" />
+                            
+                    <Button Grid.Column="1"
+                            Text="Save"
+                            Command="{Binding SaveStaffCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                </Grid>
+                
+                <!-- Delete Button (only for existing staff) -->
+                <Button Grid.Row="5"
+                        Text="Delete Staff Member"
+                        Command="{Binding DeleteStaffCommand}"
+                        Style="{StaticResource DangerButtonStyle}"
+                        IsVisible="{Binding IsNew, Converter={StaticResource InvertedBoolConverter}}"
+                        Margin="0,10,0,0" />
+
+                <!-- Loading Indicator -->
+                <controls:LoadingIndicator Grid.RowSpan="6" 
+                                           IsLoading="{Binding IsLoading}"
+                                           LoadingText="Processing..." />
+            </Grid>
+        </ScrollView>
+    </Grid>
 </ContentPage>

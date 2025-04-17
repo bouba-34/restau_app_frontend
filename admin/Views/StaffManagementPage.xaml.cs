@@ -1,15 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using admin.ViewModels;
 
 namespace admin.Views;
 
 public partial class StaffManagementPage : ContentPage
 {
-    public StaffManagementPage()
+    private readonly StaffManagementViewModel _viewModel;
+
+    public StaffManagementPage(StaffManagementViewModel viewModel)
     {
         InitializeComponent();
+        _viewModel = viewModel;
+        BindingContext = _viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (!_viewModel.IsInitialized)
+        {
+            await _viewModel.InitializeAsync();
+        }
     }
 }

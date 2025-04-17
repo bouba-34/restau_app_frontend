@@ -6,9 +6,9 @@
              xmlns:resmodel="clr-namespace:Shared.Models.Reservation;assembly=Shared"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              xmlns:viewModels="using:admin.ViewModels"
-             xmlns:converters1="using:admin.Converters"
-             xmlns:controls1="using:admin.Controls"
-             xmlns:dashboard="using:Shared.Models.Dashboard"
+             xmlns:dashboard="clr-namespace:Shared.Models.Dashboard;assembly=Shared"
+             xmlns:converters="using:admin.Converters"
+             xmlns:controls="using:admin.Controls"
              x:Class="admin.Views.DashboardPage"
              x:DataType="viewModels:DashboardViewModel"
              Shell.NavBarIsVisible="True"
@@ -16,10 +16,9 @@
              BackgroundColor="{DynamicResource AppBackgroundColor}">
 
     <ContentPage.Resources>
-        <converters1:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter" />
-        <converters1:ReservationStatusToColorConverter x:Key="ReservationStatusToColorConverter" />
-        <converters1:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters1:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter" />
+        <converters:ReservationStatusToColorConverter x:Key="ReservationStatusToColorConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,*">
@@ -58,7 +57,7 @@
                     </Frame>
 
                     <!-- Loading Indicator -->
-                    <controls1:LoadingIndicator IsLoading="{Binding IsBusy}"
+                    <controls:LoadingIndicator IsLoading="{Binding IsBusy}"
                                                 LoadingText="Loading dashboard data..." />
 
                     <!-- Key Metrics -->
@@ -67,7 +66,7 @@
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
                         <!-- Today's Sales -->
-                        <controls1:StatisticsCard Grid.Column="0"
+                        <controls:StatisticsCard Grid.Column="0"
                                                 Title="Today's Sales"
                                                 Value="{Binding DashboardSummary.Today.TotalSales, StringFormat='${0:N2}'}"
                                                 Icon="&#xf153;"
@@ -77,7 +76,7 @@
                                                 ComparisonTextColor="{StaticResource SuccessColor}" />
 
                         <!-- Today's Orders -->
-                        <controls1:StatisticsCard Grid.Column="1"
+                        <controls:StatisticsCard Grid.Column="1"
                                                 Title="Today's Orders"
                                                 Value="{Binding DashboardSummary.Today.TotalOrders, StringFormat='{0}'}"
                                                 Icon="&#xf0d1;"
@@ -89,14 +88,14 @@
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
                         <!-- Active Orders -->
-                        <controls1:StatisticsCard Grid.Column="0"
+                        <controls:StatisticsCard Grid.Column="0"
                                                 Title="Active Orders"
                                                 Value="{Binding TotalActiveOrders, StringFormat='{0}'}"
                                                 Icon="&#xf162;"
                                                 IconBackgroundColor="{StaticResource InfoColor}" />
 
                         <!-- Today's Reservations -->
-                        <controls1:StatisticsCard Grid.Column="1"
+                        <controls:StatisticsCard Grid.Column="1"
                                                 Title="Upcoming Reservations"
                                                 Value="{Binding TotalUpcomingReservations, StringFormat='{0}'}"
                                                 Icon="&#xf073;"
@@ -106,10 +105,10 @@
                     <!-- Charts Row -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
                         <!-- Sales By Category -->
-                        <controls1:CardView Grid.Column="0"
+                        <controls:CardView Grid.Column="0"
                                           Title="Sales by Category"
                                           ShowHeader="True">
-                            <controls1:CardView.CardContent>
+                            <controls:CardView.CardContent>
                                 <Grid RowDefinitions="200,Auto">
                                     <lvc:PieChart Grid.Row="0"
                                                   Series="{Binding SalesBySeries}"
@@ -123,14 +122,14 @@
                                            TextColor="{DynamicResource TextSecondaryColor}"
                                            VerticalOptions="Center" />
                                 </Grid>
-                            </controls1:CardView.CardContent>
-                        </controls1:CardView>
+                            </controls:CardView.CardContent>
+                        </controls:CardView>
 
                         <!-- Orders By Hour -->
-                        <controls1:CardView Grid.Column="1"
+                        <controls:CardView Grid.Column="1"
                                           Title="Orders by Hour"
                                           ShowHeader="True">
-                            <controls1:CardView.CardContent>
+                            <controls:CardView.CardContent>
                                 <Grid RowDefinitions="200,Auto">
                                     <lvc:CartesianChart Grid.Row="0"
                                                        Series="{Binding OrdersByHourSeries}"
@@ -143,19 +142,19 @@
                                            TextColor="{DynamicResource TextSecondaryColor}"
                                            VerticalOptions="Center" />
                                 </Grid>
-                            </controls1:CardView.CardContent>
-                        </controls1:CardView>
+                            </controls:CardView.CardContent>
+                        </controls:CardView>
                     </Grid>
 
                     <!-- Active Orders -->
-                    <controls1:CardView Title="Active Orders"
+                    <controls:CardView Title="Active Orders"
                                       ShowHeader="True"
                                       ShowAction="True"
                                       ActionText="View All"
                                       ActionCommand="{Binding ViewAllOrdersCommand}">
-                        <controls1:CardView.CardContent>
+                        <controls:CardView.CardContent>
                             <VerticalStackLayout Spacing="8">
-                                <controls1:LoadingIndicator IsLoading="{Binding IsLoadingOrders}"
+                                <controls:LoadingIndicator IsLoading="{Binding IsLoadingOrders}"
                                                           LoadingText="Loading orders..." />
                                 
                                 <Label Text="No active orders"
@@ -217,18 +216,18 @@
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
                             </VerticalStackLayout>
-                        </controls1:CardView.CardContent>
-                    </controls1:CardView>
+                        </controls:CardView.CardContent>
+                    </controls:CardView>
 
                     <!-- Upcoming Reservations -->
-                    <controls1:CardView Title="Upcoming Reservations"
+                    <controls:CardView Title="Upcoming Reservations"
                                       ShowHeader="True"
                                       ShowAction="True"
                                       ActionText="View All"
                                       ActionCommand="{Binding ViewAllReservationsCommand}">
-                        <controls1:CardView.CardContent>
+                        <controls:CardView.CardContent>
                             <VerticalStackLayout Spacing="8">
-                                <controls1:LoadingIndicator IsLoading="{Binding IsLoadingReservations}"
+                                <controls:LoadingIndicator IsLoading="{Binding IsLoadingReservations}"
                                                           LoadingText="Loading reservations..." />
                                 
                                 <Label Text="No upcoming reservations"
@@ -290,15 +289,15 @@
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
                             </VerticalStackLayout>
-                        </controls1:CardView.CardContent>
-                    </controls1:CardView>
+                        </controls:CardView.CardContent>
+                    </controls:CardView>
 
                     <!-- Best Sellers -->
-                    <controls1:CardView Title="Best Selling Items"
+                    <controls:CardView Title="Best Selling Items"
                                       ShowHeader="True">
-                        <controls1:CardView.CardContent>
+                        <controls:CardView.CardContent>
                             <VerticalStackLayout Spacing="8">
-                                <controls1:LoadingIndicator IsLoading="{Binding IsLoadingSummary}"
+                                <controls:LoadingIndicator IsLoading="{Binding IsLoadingSummary}"
                                                           LoadingText="Loading top items..." />
                                 
                                 <Label Text="No data available"
@@ -327,8 +326,8 @@
                                     </CollectionView.ItemTemplate>
                                 </CollectionView>
                             </VerticalStackLayout>
-                        </controls1:CardView.CardContent>
-                    </controls1:CardView>
+                        </controls:CardView.CardContent>
+                    </controls:CardView>
                 </VerticalStackLayout>
             </RefreshView>
         </ScrollView>

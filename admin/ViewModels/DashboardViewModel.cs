@@ -1,5 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using Shared.Models.Dashboard;
 using Shared.Models.Order;
 using Shared.Models.Reservation;
@@ -39,8 +44,23 @@ namespace admin.ViewModels
         [ObservableProperty]
         private bool isLoadingReservations;
 
-        public ObservableCollection<ChartData> SalesByCategory { get; } = new();
-        public ObservableCollection<ChartData> OrdersByHour { get; } = new();
+        [ObservableProperty]
+        private ObservableCollection<ISeries> salesBySeries;
+
+        [ObservableProperty]
+        private ObservableCollection<ISeries> ordersByHourSeries;
+
+        [ObservableProperty]
+        private List<Axis> ordersXAxes;
+
+        [ObservableProperty]
+        private List<Axis> ordersYAxes;
+
+        [ObservableProperty]
+        private bool isSalesByCategoryEmpty = true;
+
+        [ObservableProperty]
+        private bool isOrdersByHourEmpty = true;
 
         public DashboardViewModel(
             IReportService reportService,
@@ -151,31 +171,111 @@ namespace admin.ViewModels
                 return;
 
             // Update sales by category chart
-            SalesByCategory.Clear();
-            if (DashboardSummary.SalesByCategory != null)
-            {
-                foreach (var category in DashboardSummary.SalesByCategory)
-                {
-                    SalesByCategory.Add(new ChartData(category.Key, (double)category.Value));
-                }
-            }
+            UpdateSalesByCategoryChart();
 
             // Update orders by hour chart
-            OrdersByHour.Clear();
-            if (DashboardSummary.OrdersByHour != null)
+            UpdateOrdersByHourChart();
+        }
+
+        private void UpdateSalesByCategoryChart()
+        {
+            if (DashboardSummary?.SalesByCategory == null || !DashboardSummary.SalesByCategory.Any())
             {
-                for (int hour = 0; hour < 24; hour++)
-                {
-                    if (DashboardSummary.OrdersByHour.TryGetValue(hour, out int count))
-                    {
-                        OrdersByHour.Add(new ChartData($"{hour}:00", count));
-                    }
-                    else
-                    {
-                        OrdersByHour.Add(new ChartData($"{hour}:00", 0));
-                    }
-                }
+                IsSalesByCategoryEmpty = true;
+                return;
             }
+
+            IsSalesByCategoryEmpty = false;
+
+            var colors = new SKColor[]
+            {
+                SKColors.DodgerBlue, SKColors.Orange, SKColors.Green, 
+                SKColors.Magenta, SKColors.Gold, SKColors.Purple,
+                SKColors.Brown, SKColors.Teal, SKColors.DeepPink
+            };
+
+            var values = new ObservableCollection<ISeries>();
+            int colorIndex = 0;
+
+            foreach (var category in DashboardSummary.SalesByCategory)
+            {
+                var pieValue = new PieSeries<ObservableValue>
+                {
+                    Name = category.Key,
+                    Values = new ObservableCollection<ObservableValue> { new ObservableValue((double)category.Value) },
+                    Fill = new SolidColorPaint(colors[colorIndex % colors.Length]),
+                    Stroke = null,
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                    DataLabelsPaint = new SolidColorPaint(SKColors.White),
+                    DataLabelsSize = 12,
+                    DataLabelsFormatter = point => $"{point.Context.Series.Name}: ${point.Model:N2}"
+                };
+
+                values.Add(pieValue);
+                colorIndex++;
+            }
+
+            SalesBySeries = values;
+        }
+
+        private void UpdateOrdersByHourChart()
+        {
+            if (DashboardSummary?.OrdersByHour == null || !DashboardSummary.OrdersByHour.Any())
+            {
+                IsOrdersByHourEmpty = true;
+                return;
+            }
+
+            IsOrdersByHourEmpty = false;
+
+            // Prepare values for orders by hour
+            var hourValues = new ObservableCollection<ObservableValue>();
+            var hourLabels = new List<string>();
+
+            // Sort by hour
+            var orderedHours = DashboardSummary.OrdersByHour.OrderBy(h => h.Key).ToList();
+
+            foreach (var hourData in orderedHours)
+            {
+                hourValues.Add(new ObservableValue(hourData.Value));
+                hourLabels.Add($"{hourData.Key:00}:00");
+            }
+
+            // Create the column series
+            var columnSeries = new ColumnSeries<ObservableValue>
+            {
+                Name = "Orders",
+                Values = hourValues,
+                Fill = new SolidColorPaint(SKColors.DodgerBlue),
+                Stroke = null,
+                DataLabelsFormatter = point => $"{point.Model}"
+            };
+
+            // Set the series
+            OrdersByHourSeries = new ObservableCollection<ISeries> { columnSeries };
+
+            // Configure X axis
+            OrdersXAxes = new List<Axis>
+            {
+                new Axis
+                {
+                    Labels = hourLabels,
+                    LabelsRotation = 45,
+                    ForceStepToMin = true,
+                    MinStep = 1
+                }
+            };
+
+            // Configure Y axis
+            OrdersYAxes = new List<Axis>
+            {
+                new Axis
+                {
+                    ForceStepToMin = true,
+                    MinStep = 1,
+                    MinLimit = 0
+                }
+            };
         }
 
         [RelayCommand]
@@ -216,18 +316,6 @@ namespace admin.ViewModels
             };
 
             await Shell.Current.GoToAsync($"ReservationDetailPage", parameters);
-        }
-    }
-
-    public class ChartData
-    {
-        public string Category { get; set; }
-        public double Value { get; set; }
-
-        public ChartData(string category, double value)
-        {
-            Category = category;
-            Value = value;
         }
     }
 }

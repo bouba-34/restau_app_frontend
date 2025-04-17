@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Shared.Models.Order;
 
-namespace RestaurantAdmin.Converters
+namespace admin.Converters
 {
     public class PaymentStatusIsNotPaidConverter : IValueConverter
     {

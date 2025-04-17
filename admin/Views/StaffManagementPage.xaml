@@ -1,9 +1,176 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="admin.Views.StaffManagementPage">
-    <ContentPage.Content>
-        
-    </ContentPage.Content>
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:admin.Controls"
+             xmlns:converters="clr-namespace:admin.Converters"
+             xmlns:model="clr-namespace:Shared.Models.Auth;assembly=Shared"
+             x:Class="admin.Views.StaffManagementPage"
+             x:DataType="viewmodels:StaffManagementViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <Label Text="{Binding Title}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="White" />
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,*">
+            
+            <!-- Filters -->
+            <Grid Grid.Row="0" RowDefinitions="Auto,Auto" Padding="20,10" BackgroundColor="{DynamicResource CardBackgroundColor}">
+                <!-- Search Bar -->
+                <Frame Grid.Row="0" Padding="5" HasShadow="False" BorderColor="{DynamicResource BorderColor}" CornerRadius="5" Margin="0,0,0,10">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Grid.Column="0" Text="&#xf002;" FontFamily="FontAwesomeSolid" TextColor="{DynamicResource TextSecondaryColor}" VerticalOptions="Center" Margin="5,0" />
+                        <Entry Grid.Column="1" Text="{Binding SearchText}" Placeholder="Search staff members..." VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+                
+                <!-- Filters -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                    <Picker Grid.Column="0" 
+                            Title="Role"
+                            ItemsSource="{Binding UserTypeOptions}" 
+                            SelectedItem="{Binding SelectedUserType}"
+                            HorizontalOptions="FillAndExpand" />
+                    
+                    <!-- Apply Button -->
+                    <Button Grid.Column="1" 
+                            Text="Apply"
+                            Command="{Binding ApplyFiltersCommand}"
+                            BackgroundColor="{DynamicResource AccentColor}"
+                            TextColor="White"
+                            Padding="10,5"
+                            CornerRadius="5"
+                            Margin="10,0,0,0" />
+                </Grid>
+            </Grid>
+            
+            <!-- Staff List -->
+            <RefreshView Grid.Row="1" 
+                         IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding RefreshCommand}">
+                <Grid RowDefinitions="Auto,*">
+                    <!-- Action Bar -->
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="20,10">
+                        <Label Grid.Column="0" 
+                               Text="{Binding StaffMembers.Count, StringFormat='Total Staff: {0}'}"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+                        
+                        <Button Grid.Column="1"
+                                Text="Add Staff Member"
+                                Command="{Binding AddStaffCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Padding="10,5" />
+                    </Grid>
+                    
+                    <!-- Staff Grid -->
+                    <CollectionView Grid.Row="1"
+                                    ItemsSource="{Binding StaffMembers}"
+                                    Margin="20,0,20,20"
+                                    EmptyView="No staff members found with the current filters">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:UserProfile">
+                                <Frame Style="{StaticResource CardStyle}" Margin="0,4,0,4">
+                                    <Grid RowDefinitions="Auto,Auto">
+                                        <!-- Header -->
+                                        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+                                            <Image Grid.Column="0"
+                                                   Source="user_profile.png"
+                                                   HeightRequest="50"
+                                                   WidthRequest="50"
+                                                   Aspect="AspectFill"
+                                                   Margin="0,0,15,0">
+                                                <Image.Clip>
+                                                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                                                </Image.Clip>
+                                            </Image>
+                                            
+                                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                                <Label Text="{Binding Username}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16"
+                                                       TextColor="{DynamicResource TextPrimaryColor}" />
+                                                <Label Text="{Binding UserType}"
+                                                       FontSize="14"
+                                                       TextColor="{DynamicResource TextSecondaryColor}" />
+                                            </VerticalStackLayout>
+                                            
+                                            <Frame Grid.Column="2"
+                                                   CornerRadius="15"
+                                                   BackgroundColor="Green"
+                                                   Padding="10,3"
+                                                   HasShadow="False"
+                                                   VerticalOptions="Center">
+                                                <Label Text="Active"
+                                                       TextColor="White"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold" />
+                                            </Frame>
+                                        </Grid>
+                                        
+                                        <!-- Contact Info & Actions -->
+                                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,15,0,0">
+                                            <VerticalStackLayout Grid.Column="0">
+                                                <StackLayout Orientation="Horizontal">
+                                                    <Label Text="&#xf0e0;"
+                                                           FontFamily="FontAwesomeSolid"
+                                                           TextColor="{DynamicResource TextSecondaryColor}"
+                                                           VerticalOptions="Center"
+                                                           Margin="0,0,5,0" />
+                                                    <Label Text="{Binding Email}"
+                                                           TextColor="{DynamicResource TextPrimaryColor}"
+                                                           VerticalOptions="Center" />
+                                                </StackLayout>
+                                                <StackLayout Orientation="Horizontal">
+                                                    <Label Text="&#xf095;"
+                                                           FontFamily="FontAwesomeSolid"
+                                                           TextColor="{DynamicResource TextSecondaryColor}"
+                                                           VerticalOptions="Center"
+                                                           Margin="0,0,5,0" />
+                                                    <Label Text="{Binding PhoneNumber}"
+                                                           TextColor="{DynamicResource TextPrimaryColor}"
+                                                           VerticalOptions="Center" />
+                                                </StackLayout>
+                                            </VerticalStackLayout>
+                                            
+                                            <Button Grid.Column="1"
+                                                    Text="Edit"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:StaffManagementViewModel}}, Path=EditStaffCommand}"
+                                                    CommandParameter="{Binding Id}"
+                                                    Style="{StaticResource PrimaryButtonStyle}"
+                                                    WidthRequest="80" />
+                                        </Grid>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    
+                    <!-- Loading Indicator -->
+                    <controls:LoadingIndicator Grid.RowSpan="2" 
+                                               IsLoading="{Binding IsLoading}"
+                                               LoadingText="Loading staff members..." />
+                </Grid>
+            </RefreshView>
+        </Grid>
+    </Grid>
 </ContentPage>

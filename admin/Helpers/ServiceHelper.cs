@@ -1,4 +1,6 @@
-﻿namespace admin.Helpers;
+﻿using System.Diagnostics;
+
+namespace admin.Helpers;
 
 public static class ServiceHelper
 {
@@ -6,6 +8,7 @@ public static class ServiceHelper
 
     public static void Initialize(IServiceProvider serviceProvider)
     {
+        Console.WriteLine("ServiceHelper initialized.");
         ServiceProvider = serviceProvider;
     }
 

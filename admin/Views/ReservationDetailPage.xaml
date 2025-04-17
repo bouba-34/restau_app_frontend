@@ -1,9 +1,167 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="admin.Views.ReservationDetailPage">
-    <ContentPage.Content>
-        
-    </ContentPage.Content>
+             xmlns:viewmodels="clr-namespace:admin.ViewModels"
+             xmlns:controls="clr-namespace:admin.Controls"
+             xmlns:converters="clr-namespace:admin.Converters"
+             x:Class="admin.Views.ReservationDetailPage"
+             x:DataType="viewmodels:ReservationDetailViewModel"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource AppBackgroundColor}">
+
+    <ContentPage.Resources>
+        <converters:ReservationStatusToColorConverter x:Key="ReservationStatusToColorConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{DynamicResource PrimaryColor}"
+              Padding="20">
+            <VerticalStackLayout>
+                <Label Text="{Binding Title}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="White" />
+                <Label Text="{Binding Subtitle}"
+                       FontSize="16"
+                       TextColor="White"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Content -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <ScrollView>
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" Padding="20" RowSpacing="20">
+
+                    <!-- Error Message -->
+                    <Frame Grid.Row="0" 
+                           IsVisible="{Binding HasError}"
+                           BackgroundColor="{StaticResource ErrorColor}"
+                           BorderColor="Transparent"
+                           CornerRadius="8"
+                           Padding="16"
+                           Margin="0">
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="White"
+                               FontSize="14" />
+                    </Frame>
+
+                    <!-- Reservation Status -->
+                    <Frame Grid.Row="1" 
+                           Style="{StaticResource CardStyle}">
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="Reservation Status"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                   
+                            <Frame Grid.Row="0" Grid.Column="1"
+                                   BackgroundColor="{Binding Reservation.Status, Converter={StaticResource ReservationStatusToColorConverter}}"
+                                   CornerRadius="15"
+                                   Padding="15,5"
+                                   HasShadow="False"
+                                   VerticalOptions="Start">
+                                <Label Text="{Binding Reservation.Status}"
+                                       TextColor="White"
+                                       FontSize="14"
+                                       FontAttributes="Bold" />
+                            </Frame>
+
+                            <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                        Orientation="Horizontal" 
+                                        Spacing="10" 
+                                        Margin="0,20,0,0">
+                                <Button Text="{Binding NextStatusButtonText}"
+                                        Command="{Binding UpdateStatusCommand}"
+                                        Style="{StaticResource SuccessButtonStyle}"
+                                        IsVisible="{Binding CanUpdateStatus}" />
+                                        
+                                <Button Text="Cancel Reservation"
+                                        Command="{Binding CancelReservationCommand}"
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        IsVisible="{Binding CanCancelReservation}" />
+                                        
+                                <Button Text="Mark as No-Show"
+                                        Command="{Binding MarkNoShowCommand}"
+                                        BackgroundColor="Purple"
+                                        TextColor="White"
+                                        IsVisible="{Binding CanUpdateStatus}" />
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Reservation Details -->
+                    <Frame Grid.Row="2" 
+                           Style="{StaticResource CardStyle}">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="15">
+                            <Label Grid.Row="0"
+                                   Text="Reservation Details"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                   
+                            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="15" RowSpacing="10">
+                                <Label Grid.Row="0" Grid.Column="0" Text="Customer:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Reservation.CustomerName}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="1" Grid.Column="0" Text="Date:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.ReservationDate, StringFormat='{0:dddd, MMMM d, yyyy}'}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="2" Grid.Column="0" Text="Time:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Reservation.ReservationTime, StringFormat='{0}'}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="3" Grid.Column="0" Text="Party Size:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="3" Grid.Column="1" Text="{Binding Reservation.PartySize, StringFormat='{0} guests'}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="4" Grid.Column="0" Text="Table:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="4" Grid.Column="1" Text="{Binding Reservation.TableNumber}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="5" Grid.Column="0" Text="Special Requests:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="5" Grid.Column="1" Text="{Binding Reservation.SpecialRequests}" TextColor="{DynamicResource TextPrimaryColor}" />
+                            </Grid>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Contact Information -->
+                    <Frame Grid.Row="3" 
+                           Style="{StaticResource CardStyle}">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="15">
+                            <Label Grid.Row="0"
+                                   Text="Contact Information"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   TextColor="{DynamicResource TextPrimaryColor}" />
+                                   
+                            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="15" RowSpacing="10">
+                                <Label Grid.Row="0" Grid.Column="0" Text="Phone:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Reservation.ContactPhone}" TextColor="{DynamicResource TextPrimaryColor}" />
+                                
+                                <Label Grid.Row="1" Grid.Column="0" Text="Email:" FontAttributes="Bold" TextColor="{DynamicResource TextPrimaryColor}" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.ContactEmail}" TextColor="{DynamicResource TextPrimaryColor}" />
+                            </Grid>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Back Button -->
+                    <Button Grid.Row="4"
+                            Text="Back to Reservations"
+                            Command="{Binding GoBackCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}" />
+
+                    <!-- Loading Indicator -->
+                    <controls:LoadingIndicator Grid.RowSpan="5" 
+                                               IsLoading="{Binding IsLoading}"
+                                               LoadingText="Loading reservation details..." />
+                </Grid>
+            </ScrollView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

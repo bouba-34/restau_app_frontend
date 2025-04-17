@@ -4,10 +4,16 @@
              xmlns:viewmodels="clr-namespace:RestaurantAdmin.ViewModels"
              xmlns:controls="clr-namespace:RestaurantAdmin.Controls"
              xmlns:viewModels="using:admin.ViewModels"
+             xmlns:converters="using:admin.Converters"
              x:Class="admin.Views.LoginPage"
              x:DataType="viewModels:LoginViewModel"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{DynamicResource AppBackgroundColor}">
+       
+       <ContentPage.Resources>
+              <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+       </ContentPage.Resources>
+
 
     <Grid RowDefinitions="*,Auto,*"
           RowSpacing="0">

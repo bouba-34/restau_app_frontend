@@ -1,4 +1,5 @@
-﻿using admin.Helpers;
+﻿using System.Diagnostics;
+using admin.Helpers;
 using admin.Services.Interfaces;
 using admin.Views;
 using Shared.Services.Interfaces;
@@ -13,7 +14,7 @@ public partial class App : Application
     public App(ILocalSettingsService localSettingsService, IThemeService themeService)
     {
         InitializeComponent();
-
+        
         _localSettingsService = localSettingsService;
         _themeService = themeService;
 
@@ -26,21 +27,44 @@ public partial class App : Application
         
         if (isLoggedIn)
         {
-            //MainPage = new AppShell();
-            MainPage = CreateAppShell();
+            //MainPage = CreateAppShell();
+            try
+            {
+                MainPage = ServiceHelper.GetService<AppShell>();
+                //MainPage = new NavigationPage(ServiceHelper.GetService<MenuManagementPage>());
+            }
+            catch (Exception ex)
+            {
+                MainPage = new ContentPage
+                {
+                    Content = new Label { Text = $"Error: {ex.Message}" }
+                };
+            }
         }
         else
         {
-            //MainPage = new NavigationPage(new LoginPage());
-            MainPage = new NavigationPage(ServiceHelper.GetService<LoginPage>());
+            /*try
+            {
+                MainPage = new NavigationPage(ServiceHelper.GetService<LoginPage>());
+            }
+            catch (Exception ex)
+            {
+                MainPage = new ContentPage
+                {
+                    Content = new Label { Text = $"Error: {ex.Message}" }
+                };
+            }*/
+
+            MainPage = new ContentPage { Content = new Label { Text = "Test Page" } };
         }
     }
     
-    public static AppShell CreateAppShell()
+    public static NavigationPage CreateAppShell()
     {
-        var auth = ServiceHelper.GetService<IAuthService>();
+        /*var auth = ServiceHelper.GetService<IAuthService>();
         var settings = ServiceHelper.GetService<ISettingsService>();
-        return new AppShell(auth, settings);
+        return new AppShell(auth, settings);*/
+        return new NavigationPage(ServiceHelper.GetService<AppShell>());
     }
 
 

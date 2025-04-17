@@ -1,13 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
-using LiveChartsCore.Kernel.Drawing;
-using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Drawing;
 using LiveChartsCore.SkiaSharpView.Painting;
-using admin.ViewModels;
 using SkiaSharp;
+using admin.ViewModels;
 
 namespace admin.Views;
 
@@ -48,9 +45,8 @@ public partial class DashboardPage : ContentPage
                 },
                 Fill = new SolidColorPaint(SKColors.Blue),
                 Stroke = null,
-                HoverPaint = new SolidColorPaint(SKColors.White.WithAlpha(220)),
                 DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
-                DataLabelsFormatter = point => $"{point.Context.Series.Name}: {point.PrimaryValue:C2}",
+                DataLabelsFormatter = point => $"{point.Context.Series.Name}: {point.Model:C2}",
                 DataLabelsPaint = new SolidColorPaint(SKColors.White),
                 Name = "No Data"
             }
@@ -67,13 +63,13 @@ public partial class DashboardPage : ContentPage
                 },
                 Fill = new SolidColorPaint(SKColors.Blue),
                 Stroke = null,
-                DataLabelsFormatter = point => $"{point.PrimaryValue}",
+                DataLabelsFormatter = point => $"{point.Model}",
                 Name = "Orders"
             }
         };
 
         // Set up X and Y axes for the Orders by Hour chart
-        _viewModel.OrdersXAxes = new List<ICartesianAxis>
+        _viewModel.OrdersXAxes = new List<Axis>
         {
             new Axis
             {
@@ -84,7 +80,7 @@ public partial class DashboardPage : ContentPage
             }
         };
 
-        _viewModel.OrdersYAxes = new List<ICartesianAxis>
+        _viewModel.OrdersYAxes = new List<Axis>
         {
             new Axis
             {

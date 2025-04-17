@@ -1,4 +1,5 @@
-﻿using admin.Helpers;
+﻿using System.Diagnostics;
+using admin.Helpers;
 using admin.Views;
 
 namespace admin;
@@ -15,8 +16,9 @@ public partial class AppShell : Shell
 
     public AppShell(IAuthService authService, ISettingsService settingsService)
     {
+        Debug.WriteLine("App constructor called");
         InitializeComponent();
-
+        
         _authService = authService;
         _settingsService = settingsService;
 
