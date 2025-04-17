@@ -1,60 +1,75 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<?xaml-comp compile="true" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:local="clr-namespace:admin.Resources.Styles"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
-    <!-- Light Theme Colors -->
-    <Color x:Key="PrimaryColor">#2B5BA7</Color>
-    <Color x:Key="PrimaryDarkColor">#1D4178</Color>
-    <Color x:Key="PrimaryLightColor">#4E7CC3</Color>
-    <Color x:Key="AccentColor">#E57C23</Color>
-    <Color x:Key="SecondaryColor">#8BC34A</Color>
-    <Color x:Key="TertiaryColor">#9C27B0</Color>
-    
-    <Color x:Key="LightBackgroundColor">#F9F9F9</Color>
-    <Color x:Key="DarkBackgroundColor">#121212</Color>
-    
-    <Color x:Key="LightTextColor">#1F1F1F</Color>
-    <Color x:Key="DarkTextColor">#F0F0F0</Color>
-    
-    <Color x:Key="LightCardColor">#FFFFFF</Color>
-    <Color x:Key="DarkCardColor">#2A2A2A</Color>
-    
-    <Color x:Key="LightBorderColor">#DDDDDD</Color>
-    <Color x:Key="DarkBorderColor">#444444</Color>
+    <!-- Core Colors -->
+    <Color x:Key="PrimaryColor">#3498db</Color>
+    <Color x:Key="PrimaryDarkColor">#2980b9</Color>
+    <Color x:Key="PrimaryLightColor">#9ec5e5</Color>
+    <Color x:Key="AccentColor">#E67E22</Color>
+    <Color x:Key="SecondaryColor">#673AB7</Color>
+    <Color x:Key="TertiaryColor">#2196F3</Color>
     
     <!-- Status Colors -->
-    <Color x:Key="SuccessColor">#4CAF50</Color>
-    <Color x:Key="WarningColor">#FF9800</Color>
-    <Color x:Key="ErrorColor">#F44336</Color>
-    <Color x:Key="InfoColor">#2196F3</Color>
-    
-    <!-- Order Status Colors -->
-    <Color x:Key="PlacedColor">#FF9800</Color>
-    <Color x:Key="PreparingColor">#2196F3</Color>
-    <Color x:Key="ReadyColor">#8BC34A</Color>
-    <Color x:Key="ServedColor">#673AB7</Color>
-    <Color x:Key="CompletedColor">#4CAF50</Color>
-    <Color x:Key="CancelledColor">#F44336</Color>
-    
-    <!-- Payment Status Colors -->
-    <Color x:Key="PaidColor">#4CAF50</Color>
-    <Color x:Key="PendingColor">#FF9800</Color>
-    <Color x:Key="FailedColor">#F44336</Color>
-    <Color x:Key="RefundedColor">#9E9E9E</Color>
-    
-    <!-- Reservation Status Colors -->
-    <Color x:Key="ReservationPendingColor">#FF9800</Color>
-    <Color x:Key="ConfirmedColor">#4CAF50</Color>
-    <Color x:Key="NoShowColor">#F44336</Color>
+    <Color x:Key="SuccessColor">#27AE60</Color>
+    <Color x:Key="WarningColor">#F39C12</Color>
+    <Color x:Key="ErrorColor">#E74C3C</Color>
+    <Color x:Key="InfoColor">#3498DB</Color>
 
-    <!-- Dynamic Resources (Light/Dark) -->
-    <Color x:Key="AppBackgroundColor">White</Color>
-    <Color x:Key="CardBackgroundColor">White</Color>
-    <Color x:Key="TextPrimaryColor">#212121</Color>
-    <Color x:Key="TextSecondaryColor">#757575</Color>
-    <Color x:Key="BorderColor">#E0E0E0</Color>
-    <Color x:Key="SeparatorColor">#E0E0E0</Color>
-    
+    <!-- Order Status Colors -->
+    <Color x:Key="PlacedColor">#3498DB</Color>
+    <Color x:Key="PreparingColor">#F39C12</Color>
+    <Color x:Key="ReadyColor">#27AE60</Color>
+    <Color x:Key="ServedColor">#9B59B6</Color>
+    <Color x:Key="CompletedColor">#2ECC71</Color>
+    <Color x:Key="CancelledColor">#E74C3C</Color>
+
+    <!-- Payment Status Colors -->
+    <Color x:Key="PaidColor">#27AE60</Color>
+    <Color x:Key="PendingColor">#F39C12</Color>
+    <Color x:Key="FailedColor">#E74C3C</Color>
+    <Color x:Key="RefundedColor">#3498DB</Color>
+
+    <!-- Reservation Status Colors -->
+    <Color x:Key="ReservationPendingColor">#F39C12</Color>
+    <Color x:Key="ConfirmedColor">#27AE60</Color>
+    <Color x:Key="NoShowColor">#E74C3C</Color>
+
+    <!-- Background Colors -->
+    <Color x:Key="LightBackgroundColor">#F8F9FA</Color>
+    <Color x:Key="DarkBackgroundColor">#121212</Color>
+    <Color x:Key="LightCardColor">White</Color>
+    <Color x:Key="DarkCardColor">#1E1E1E</Color>
+
+    <!-- Text Colors -->
+    <Color x:Key="LightTextColor">#212529</Color>
+    <Color x:Key="DarkTextColor">White</Color>
+
+    <!-- Border Colors -->
+    <Color x:Key="LightBorderColor">#DEE2E6</Color>
+    <Color x:Key="DarkBorderColor">#333333</Color>
+
+    <!-- Dynamic/Theme-aware Colors -->
+    <toolkit:AppThemeColor x:Key="AppBackgroundColor"
+                   Light="{StaticResource LightBackgroundColor}"
+                   Dark="{StaticResource DarkBackgroundColor}" />
+    <toolkit:AppThemeColor x:Key="CardBackgroundColor"
+                   Light="{StaticResource LightCardColor}"
+                   Dark="{StaticResource DarkCardColor}" />
+    <toolkit:AppThemeColor x:Key="TextPrimaryColor"
+                   Light="{StaticResource LightTextColor}"
+                   Dark="{StaticResource DarkTextColor}" />
+    <toolkit:AppThemeColor x:Key="TextSecondaryColor"
+                   Light="#757575"
+                   Dark="#AAAAAA" />
+    <toolkit:AppThemeColor x:Key="BorderColor"
+                   Light="{StaticResource LightBorderColor}"
+                   Dark="{StaticResource DarkBorderColor}" />
+    <toolkit:AppThemeColor x:Key="SeparatorColor"
+                   Light="{StaticResource LightBorderColor}"
+                   Dark="{StaticResource DarkBorderColor}" />
 </ResourceDictionary>

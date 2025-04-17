@@ -42,7 +42,7 @@ namespace admin.Services.Implementation
             Application.Current.UserAppTheme = isDarkMode ? AppTheme.Dark : AppTheme.Light;
     
             // Manually update resources if needed
-            if (isDarkMode)
+            /*if (isDarkMode)
             {
                 Application.Current.Resources["AppBackgroundColor"] = Application.Current.Resources["DarkBackgroundColor"];
                 Application.Current.Resources["CardBackgroundColor"] = Application.Current.Resources["DarkCardColor"];
@@ -59,7 +59,7 @@ namespace admin.Services.Implementation
                 Application.Current.Resources["TextSecondaryColor"] = Color.FromHex("#757575");
                 Application.Current.Resources["BorderColor"] = Application.Current.Resources["LightBorderColor"];
                 Application.Current.Resources["SeparatorColor"] = Application.Current.Resources["LightBorderColor"];
-            }
+            }*/
         }
 
         public void ToggleTheme()
