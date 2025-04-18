@@ -7,8 +7,6 @@
              xmlns:model="clr-namespace:Shared.Models.Menu;assembly=Shared"
              x:Class="admin.Views.MenuManagementPage"
              x:DataType="viewmodels:MenuManagementViewModel"
-             Shell.NavBarIsVisible="True"
-             Title="{Binding Title}"
              BackgroundColor="{DynamicResource AppBackgroundColor}">
 
     <ContentPage.Resources>

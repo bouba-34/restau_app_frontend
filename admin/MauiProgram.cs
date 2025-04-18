@@ -1,21 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
-using CommunityToolkit.Maui;
-using Shared.Services.Implementations;
-using Shared.Services.Interfaces;
-using Shared.Services.SignalR;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using admin.Helpers;
 using admin.Services.Implementation;
 using admin.Services.Interfaces;
 using admin.ViewModels;
 using admin.Views;
+using CommunityToolkit.Maui;
+using LiveChartsCore.SkiaSharpView.Maui;
+using Microsoft.Extensions.Logging;
+using Shared.Services.Implementations;
+using Shared.Services.Interfaces;
+using Shared.Services.SignalR;
 using SkiaSharp.Views.Maui.Controls.Hosting;
-#if WINDOWS
-using Microsoft.Maui.LifecycleEvents;
-using Microsoft.UI;
-using Microsoft.UI.Windowing;
-using WinRT.Interop;
-#endif
+
 
 namespace admin;
 
@@ -25,9 +21,10 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseMauiApp<TestApp>()
+            .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .UseSkiaSharp()
+            .UseLiveCharts()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -36,39 +33,11 @@ public static class MauiProgram
                 fonts.AddFont("FontAwesome-Solid.ttf", "FontAwesomeSolid");
                 fonts.AddFont("FontAwesome-Brands.ttf", "FontAwesomeBrands");
             });
-
-#if WINDOWS
-        /*builder.ConfigureLifecycleEvents(events =>
-        {
-            events.AddWindows(windows => windows
-                //.OnNativeMessage((app, args) => { })
-                .OnWindowCreated(window =>
-                {
-                    window.ExtendsContentIntoTitleBar = false;
-                    var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
-                    var nativeWindowHandle = new Windows.Win32.Foundation.HWND(handle);
-                    var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(nativeWindowHandle);
-                    var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-                    appWindow.Resize(new Windows.Graphics.SizeInt32(1280, 860));
-                }));
-        });*/
-        builder.ConfigureLifecycleEvents(events =>
-        {
-            events.AddWindows(windows =>
-                windows.OnWindowCreated(window =>
-                {
-                    var hwnd = WindowNative.GetWindowHandle(window);
-                    var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
-                    var appWindow = AppWindow.GetFromWindowId(windowId);
-                    appWindow.Resize(new Windows.Graphics.SizeInt32(1280, 860));
-                }));
-        });
-#endif
-
+        
         // Register services
         builder.Services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
         builder.Services.AddSingleton<IThemeService, ThemeService>();
-
+        
         // Register HTTP client
         builder.Services.AddSingleton(serviceProvider =>
         {
@@ -93,7 +62,7 @@ public static class MauiProgram
 
             return httpClient;
         });
-
+        
         // Register Shared services
         builder.Services.AddSingleton<ISettingsService, SettingsService>();
         builder.Services.AddSingleton<ICacheService, CacheService>();
@@ -108,21 +77,22 @@ public static class MauiProgram
         builder.Services.AddSingleton<IUserService, UserService>();
         
         // Register AppShell and its dependencies
-        builder.Services.AddSingleton<AppShell>();
+        //builder.Services.AddSingleton<AppShell>();
 
         // Register pages and view models
         RegisterPagesAndViewModels(builder.Services);
 
+
+
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-        /*ServiceHelper.Initialize(builder.Build().Services);
-        return builder.Build();*/
         var app = builder.Build();
         ServiceHelper.Initialize(app.Services);
         return app;
     }
-
+    
     private static void RegisterPagesAndViewModels(IServiceCollection services)
     {
         Console.WriteLine("RegisterPagesAndViewModels");
@@ -162,4 +132,5 @@ public static class MauiProgram
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
     }
+
 }

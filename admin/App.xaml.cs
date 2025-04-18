@@ -6,6 +6,21 @@ using Shared.Services.Interfaces;
 
 namespace admin;
 
+/*public partial class App : Application
+{
+    public App()
+    {
+        InitializeComponent();
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        var authService = ServiceHelper.GetService<IAuthService>();
+        var settingsService = ServiceHelper.GetService<ISettingsService>();
+        return new Window(new AppShell(authService, settingsService));
+    }
+}*/
+
 public partial class App : Application
 {
     private readonly ILocalSettingsService _localSettingsService;
@@ -14,7 +29,7 @@ public partial class App : Application
     public App(ILocalSettingsService localSettingsService, IThemeService themeService)
     {
         InitializeComponent();
-        
+
         _localSettingsService = localSettingsService;
         _themeService = themeService;
 
@@ -24,118 +39,29 @@ public partial class App : Application
 
         // Check if user is logged in
         var isLoggedIn = _localSettingsService.GetSetting<bool>("IsLoggedIn", false);
-        
-        try
+
+        if (isLoggedIn)
         {
-            Debug.WriteLine("Setting main page...");
-            
-            if (isLoggedIn)
+            var authService = ServiceHelper.GetService<IAuthService>();
+            var settingsService = ServiceHelper.GetService<ISettingsService>();
+            if (authService == null || settingsService == null)
             {
-                try
-                {
-                    Debug.WriteLine("Trying to create AppShell...");
-                    // Try to create required services first to check they exist
-                    var authService = ServiceHelper.GetService<IAuthService>();
-                    var settingsService = ServiceHelper.GetService<ISettingsService>();
-                    
-                    if (authService == null || settingsService == null)
-                    {
-                        Debug.WriteLine("Required services are null");
-                        MainPage = new ContentPage { Content = new Label { Text = "Error: Required services not found" } };
-                        return;
-                    }
-                    
-                    Debug.WriteLine("Creating AppShell...");
-                    var appShell = new AppShell(authService, settingsService);
-                    MainPage = appShell;
-                    Debug.WriteLine("AppShell created successfully");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error creating AppShell: {ex.Message}");
-                    Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                    MainPage = new ContentPage
-                    {
-                        Content = new VerticalStackLayout
-                        {
-                            Children = 
-                            {
-                                new Label { Text = $"Error: {ex.Message}", TextColor = Colors.Red },
-                                new Label { Text = $"Stack trace: {ex.StackTrace}", FontSize = 12 }
-                            },
-                            VerticalOptions = LayoutOptions.Center,
-                            Padding = 20
-                        }
-                    };
-                }
+                Debug.WriteLine("Required services are null");
+                MainPage = new ContentPage { Content = new Label { Text = "Error: Required services not found" } };
+                return;
             }
-            else
-            {
-                // For now, just show the test page for debugging
-                Debug.WriteLine("Showing test page");
-                MainPage = new ContentPage 
-                { 
-                    Content = new VerticalStackLayout
-                    {
-                        Children =
-                        {
-                            new Label { Text = "Test Page - Not Logged In", HorizontalOptions = LayoutOptions.Center },
-                            new Button 
-                            { 
-                                Text = "Go to Login Page",
-                                Command = new Command(async () => 
-                                {
-                                    try 
-                                    {
-                                        var loginPage = ServiceHelper.GetService<LoginPage>();
-                                        MainPage = new NavigationPage(loginPage);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        await Current.MainPage.DisplayAlert("Error", $"Could not navigate to login: {ex.Message}", "OK");
-                                    }
-                                })
-                            }
-                        },
-                        VerticalOptions = LayoutOptions.Center
-                    } 
-                };
-            }
+            MainPage = new AppShell(authService, settingsService);
+            //var loginPage = ServiceHelper.GetService<LoginPage>();
+            //MainPage = new NavigationPage(ServiceHelper.GetService<LoginPage>());
         }
-        catch (Exception ex)
+        else
         {
-            Debug.WriteLine($"Unhandled error in App constructor: {ex.Message}");
-            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-            MainPage = new ContentPage
-            {
-                Content = new Label { Text = $"Critical Error: {ex.Message}" }
-            };
+            var loginPage = ServiceHelper.GetService<LoginPage>();
+            MainPage = new NavigationPage(loginPage);
+            //MainPage = new ContentPage { Content = new Label { Text = "just for testing" } };
         }
     }
     
-    public static NavigationPage CreateAppShell()
-    {
-        try
-        {
-            Debug.WriteLine("CreateAppShell called");
-            var auth = ServiceHelper.GetService<IAuthService>();
-            var settings = ServiceHelper.GetService<ISettingsService>();
-            
-            if (auth == null || settings == null)
-            {
-                Debug.WriteLine("Services not available in CreateAppShell");
-                return new NavigationPage(new ContentPage { Content = new Label { Text = "Error: Services not found" } });
-            }
-            
-            return new NavigationPage(new AppShell(auth, settings));
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error in CreateAppShell: {ex.Message}");
-            return new NavigationPage(new ContentPage { Content = new Label { Text = $"Error: {ex.Message}" } });
-        }
-    }
-
     protected override void OnStart()
     {
         base.OnStart();

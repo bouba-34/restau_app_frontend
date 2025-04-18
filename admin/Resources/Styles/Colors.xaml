@@ -2,8 +2,6 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
-    xmlns:local="clr-namespace:admin.Resources.Styles"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
     <!-- Core Colors -->
@@ -52,6 +50,7 @@
     <!-- Border Colors -->
     <Color x:Key="LightBorderColor">#DEE2E6</Color>
     <Color x:Key="DarkBorderColor">#333333</Color>
+    
 
     <!-- Dynamic/Theme-aware Colors -->
     <toolkit:AppThemeColor x:Key="AppBackgroundColor"

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Shared.Models.Order;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using admin.Views;
 
 namespace admin.ViewModels
 {
@@ -124,7 +125,8 @@ namespace admin.ViewModels
                 { "OrderId", orderId }
             };
 
-            await Shell.Current.GoToAsync($"OrderDetailPage", parameters);
+            //await Shell.Current.GoToAsync($"OrderDetailPage", parameters);
+            await Shell.Current.GoToAsync(nameof(OrderDetailPage), parameters);
         }
 
         [RelayCommand]

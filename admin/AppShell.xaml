@@ -3,7 +3,8 @@
     x:Class="admin.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="using:admin.Views"
+    xmlns:local="clr-namespace:admin"
+    xmlns:views="clr-namespace:admin.Views"
     Shell.FlyoutBehavior="Flyout"
     Shell.FlyoutWidth="250"
     Shell.BackgroundColor="{DynamicResource AppBackgroundColor}"
@@ -11,29 +12,20 @@
     Shell.TitleColor="{DynamicResource TextPrimaryColor}"
     Shell.NavBarIsVisible="False"
     Shell.TabBarIsVisible="False">
-
+    
     <Shell.FlyoutHeaderTemplate>
         <DataTemplate>
-            <Grid HeightRequest="150" 
-                  BackgroundColor="{DynamicResource PrimaryColor}">
-                <Image Source="restaurant_logo.png"
-                       HeightRequest="80"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center" />
-                <VerticalStackLayout VerticalOptions="End"
-                                     Padding="20,0,0,20">
-                    <Label Text="Restaurant Admin"
-                           FontSize="20"
-                           TextColor="White"
-                           FontAttributes="Bold" />
-                    <Label Text="{Binding Username}"
-                           TextColor="White"
-                           FontSize="14" />
-                </VerticalStackLayout>
+            <Grid HeightRequest="150">
+                <Image Source="restaurant_logo.jpg"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Fill"
+                       VerticalOptions="Fill" />
             </Grid>
         </DataTemplate>
     </Shell.FlyoutHeaderTemplate>
 
+
+    
     <Shell.ItemTemplate>
         <DataTemplate>
             <Grid ColumnDefinitions="30,*" 
@@ -52,7 +44,11 @@
             </Grid>
         </DataTemplate>
     </Shell.ItemTemplate>
-
+    
+    <!--<FlyoutItem Title="Main Page" Icon="&#xf015;" Route="MainPage">
+        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>-->
+    
     <FlyoutItem Title="Dashboard" Icon="&#xf015;" Route="Dashboard">
         <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" />
     </FlyoutItem>
@@ -72,11 +68,11 @@
     <FlyoutItem Title="Staff Management" Icon="&#xf500;" Route="Staff">
         <ShellContent ContentTemplate="{DataTemplate views:StaffManagementPage}" />
     </FlyoutItem>
-
-    <FlyoutItem Title="Settings" Icon="&#xf013;" Route="Settings">
+    
+    <!--<FlyoutItem Title="Settings" Icon="&#xf500;" Route="Settings">
         <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
-    </FlyoutItem>
-
+    </FlyoutItem>-->
+    
     <Shell.FlyoutFooterTemplate>
         <DataTemplate>
             <StackLayout Padding="20,20">

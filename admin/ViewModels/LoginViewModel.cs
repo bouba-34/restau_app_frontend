@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using admin.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using admin.Services.Interfaces;
 using admin.Views;
@@ -93,7 +94,9 @@ namespace admin.ViewModels
                 }
 
                 // Navigate to main app
-                Application.Current.MainPage = App.CreateAppShell();
+                var autService = ServiceHelper.GetService<IAuthService>();
+                var settingsService = ServiceHelper.GetService<ISettingsService>();
+                Application.Current.MainPage = new AppShell(autService, settingsService);
             }
             catch (Exception ex)
             {

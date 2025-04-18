@@ -6,8 +6,6 @@
              xmlns:converters="clr-namespace:admin.Converters"
              x:Class="admin.Views.StaffDetailPage"
              x:DataType="viewmodels:StaffDetailViewModel"
-             Shell.NavBarIsVisible="True"
-             Title="{Binding Title}"
              BackgroundColor="{DynamicResource AppBackgroundColor}">
 
     <ContentPage.Resources>

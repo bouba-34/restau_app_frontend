@@ -7,8 +7,6 @@
              xmlns:model="clr-namespace:Shared.Models.Order;assembly=Shared"
              x:Class="admin.Views.OrderDetailPage"
              x:DataType="viewmodels:OrderDetailViewModel"
-             Shell.NavBarIsVisible="True"
-             Title="{Binding Title}"
              BackgroundColor="{DynamicResource AppBackgroundColor}">
 
     <ContentPage.Resources>

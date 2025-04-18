@@ -7,8 +7,6 @@
              xmlns:model="clr-namespace:Shared.Models.Reservation;assembly=Shared"
              x:Class="admin.Views.ReservationsPage"
              x:DataType="viewmodels:ReservationsViewModel"
-             Shell.NavBarIsVisible="True"
-             Title="{Binding Title}"
              BackgroundColor="{DynamicResource AppBackgroundColor}">
 
     <ContentPage.Resources>

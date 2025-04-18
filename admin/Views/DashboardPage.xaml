@@ -11,8 +11,6 @@
              xmlns:controls="using:admin.Controls"
              x:Class="admin.Views.DashboardPage"
              x:DataType="viewModels:DashboardViewModel"
-             Shell.NavBarIsVisible="True"
-             Title="{Binding Title}"
              BackgroundColor="{DynamicResource AppBackgroundColor}">
 
     <ContentPage.Resources>

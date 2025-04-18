@@ -6,8 +6,6 @@
              xmlns:converters="clr-namespace:admin.Converters"
              x:Class="admin.Views.ReservationDetailPage"
              x:DataType="viewmodels:ReservationDetailViewModel"
-             Shell.NavBarIsVisible="True"
-             Title="{Binding Title}"
              BackgroundColor="{DynamicResource AppBackgroundColor}">
 
     <ContentPage.Resources>

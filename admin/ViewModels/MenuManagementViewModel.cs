@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Shared.Models.Menu;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using admin.Views;
 
 namespace admin.ViewModels
 {
@@ -154,13 +155,14 @@ namespace admin.ViewModels
         {
             if (string.IsNullOrEmpty(menuItemId))
                 return;
-
+            
             var parameters = new Dictionary<string, object>
             {
                 { "MenuItemId", menuItemId }
             };
 
-            await Shell.Current.GoToAsync($"MenuItemDetailPage", parameters);
+            //await Shell.Current.GoToAsync($"MenuItemDetailPage", parameters);
+            await Shell.Current.GoToAsync(nameof(MenuItemDetailPage), parameters);
         }
 
         [RelayCommand]

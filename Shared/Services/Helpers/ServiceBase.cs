@@ -70,6 +70,7 @@ namespace Shared.Services.Helpers
         {
             try
             {
+                Console.WriteLine("getting upcoming reservations");
                 var response = await _httpClient.GetAsync(endpoint);
                 return await HandleResponse<T>(response);
             }

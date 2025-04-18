@@ -10,6 +10,7 @@ using Shared.Models.Order;
 using Shared.Models.Reservation;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
+using admin.Views;
 
 namespace admin.ViewModels
 {
@@ -281,13 +282,15 @@ namespace admin.ViewModels
         [RelayCommand]
         private async Task ViewAllOrdersAsync()
         {
-            await Shell.Current.GoToAsync("//Orders");
+            //await Shell.Current.GoToAsync("//Orders");
+            await Shell.Current.GoToAsync(nameof(OrdersPage));
         }
 
         [RelayCommand]
         private async Task ViewAllReservationsAsync()
         {
-            await Shell.Current.GoToAsync("//Reservations");
+            //await Shell.Current.GoToAsync("//Reservations");
+            await Shell.Current.GoToAsync(nameof(ReservationsPage));
         }
 
         [RelayCommand]
@@ -301,7 +304,8 @@ namespace admin.ViewModels
                 { "OrderId", orderId }
             };
 
-            await Shell.Current.GoToAsync($"OrderDetailPage", parameters);
+            //await Shell.Current.GoToAsync($"OrderDetailPage", parameters);
+            await Shell.Current.GoToAsync(nameof(OrderDetailPage), parameters);
         }
 
         [RelayCommand]
@@ -315,7 +319,8 @@ namespace admin.ViewModels
                 { "ReservationId", reservationId }
             };
 
-            await Shell.Current.GoToAsync($"ReservationDetailPage", parameters);
+            //await Shell.Current.GoToAsync($"ReservationDetailPage", parameters);
+            await Shell.Current.GoToAsync(nameof(ReservationDetailPage), parameters);
         }
     }
 }
