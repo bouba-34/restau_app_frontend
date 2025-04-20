@@ -102,8 +102,6 @@
                                     Order="{Binding .}"
                                     ViewDetailsCommand="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:OrdersViewModel}}, Path=ViewOrderDetailsCommand}"
                                     UpdateStatusCommand="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:OrdersViewModel}}, Path=UpdateOrderStatusCommand}" />
-                                    <!--NextActionText="{Binding NextActionText}"
-                                    ShowNextActionButton="{Binding ShowNextActionButton}" />-->
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

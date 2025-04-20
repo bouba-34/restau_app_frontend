@@ -33,7 +33,7 @@
 
         <!-- Content -->
         <ScrollView Grid.Row="1">
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto" Padding="20" RowSpacing="20">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Padding="20" RowSpacing="20">
 
                 <!-- Error Message -->
                 <Frame Grid.Row="0" 

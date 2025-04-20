@@ -117,7 +117,7 @@ namespace admin.ViewModels
         [RelayCommand]
         private async Task ViewOrderDetailsAsync(string orderId)
         {
-            if (string.IsNullOrEmpty(orderId))
+            /*if (string.IsNullOrEmpty(orderId))
                 return;
 
             var parameters = new Dictionary<string, object>
@@ -126,7 +126,26 @@ namespace admin.ViewModels
             };
 
             //await Shell.Current.GoToAsync($"OrderDetailPage", parameters);
-            await Shell.Current.GoToAsync(nameof(OrderDetailPage), parameters);
+            await Shell.Current.GoToAsync(nameof(OrderDetailPage), parameters);*/
+            
+            try
+            {
+                if (string.IsNullOrEmpty(orderId))
+                    return;
+
+                var parameters = new Dictionary<string, object>
+                {
+                    { "OrderId", orderId }
+                };
+
+                await Shell.Current.GoToAsync(nameof(OrderDetailPage), parameters);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception - add temporary UI alert for debugging
+                await Shell.Current.DisplayAlert("Navigation Error", ex.Message, "OK");
+            }
+            
         }
 
         [RelayCommand]

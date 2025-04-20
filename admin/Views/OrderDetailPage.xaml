@@ -12,8 +12,7 @@
     <ContentPage.Resources>
         <converters:OrderStatusToColorConverter x:Key="OrderStatusToColorConverter" />
         <converters:PaymentStatusToColorConverter x:Key="PaymentStatusToColorConverter" />
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters:PaymentStatusIsNotPaidConverter x:Key="PaymentStatusIsNotPaidConverter" />
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,*">
@@ -203,12 +202,6 @@
                                     Style="{StaticResource PrimaryButtonStyle}" />
                         </Grid>
                     </Frame>
-
-                    <!-- Back Button -->
-                    <Button Grid.Row="5"
-                            Text="Back to Orders"
-                            Command="{Binding GoBackCommand}"
-                            Style="{StaticResource SecondaryButtonStyle}" />
 
                     <!-- Loading Indicator -->
                     <controls:LoadingIndicator Grid.RowSpan="6" 

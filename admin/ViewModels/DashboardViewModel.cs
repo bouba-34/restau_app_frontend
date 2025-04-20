@@ -11,6 +11,7 @@ using Shared.Models.Reservation;
 using Shared.Services.Interfaces;
 using System.Collections.ObjectModel;
 using admin.Views;
+using Microsoft.Extensions.Logging;
 
 namespace admin.ViewModels
 {

@@ -25,9 +25,9 @@
         public const string SignalRHubUrl = "restauranthub";
         
         // Default values
-        public const string DefaultApiBaseUrl = "http://localhost:5238/";
+        //public const string DefaultApiBaseUrl = "http://localhost:5238/";
         //public const string DefaultApiBaseUrl = "http://10.0.2.2:5238/";
-        //public const string DefaultApiBaseUrl = "http://192.168.11.104:5238/";
+        public const string DefaultApiBaseUrl = "http://192.168.11.104:5238/";
         
         // Cache durations (in minutes)
         public const int CacheDurationShort = 5;

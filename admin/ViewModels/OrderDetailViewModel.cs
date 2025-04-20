@@ -143,7 +143,7 @@ namespace admin.ViewModels
                 ClearError();
 
                 var success = await _orderService.UpdateOrderStatusAsync(OrderId, NextStatus);
-                if (success)
+                /*if (success)
                 {
                     // Send notification to customer
                     await _notificationService.SendNotificationAsync(
@@ -153,7 +153,15 @@ namespace admin.ViewModels
 
                     // Reload order to get latest status
                     await LoadOrderAsync();
-                }
+                }*/
+                // Send notification to customer
+                await _notificationService.SendNotificationAsync(
+                    Order.CustomerId,
+                    $"Order #{Order.Id} Status Update",
+                    $"Your order is now {NextStatus}.");
+
+                // Reload order to get latest status
+                await LoadOrderAsync();
             }
             catch (Exception ex)
             {
@@ -222,7 +230,7 @@ namespace admin.ViewModels
                 ClearError();
 
                 var success = await _orderService.ProcessPaymentAsync(OrderId, "CreditCard", PaymentStatus.Paid);
-                if (success)
+                /*if (success)
                 {
                     // Send notification to customer
                     await _notificationService.SendNotificationAsync(
@@ -232,7 +240,15 @@ namespace admin.ViewModels
 
                     // Reload order to get latest status
                     await LoadOrderAsync();
-                }
+                }*/
+                // Send notification to customer
+                await _notificationService.SendNotificationAsync(
+                    Order.CustomerId,
+                    $"Order #{Order.Id} Payment Processed",
+                    "Your payment has been processed successfully.");
+
+                // Reload order to get latest status
+                await LoadOrderAsync();
             }
             catch (Exception ex)
             {

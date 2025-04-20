@@ -19,6 +19,8 @@ using Shared.Services.SignalR;
 using System.Net.Http.Headers;
 using client.Services;
 using CommunityToolkit.Maui;
+using Plugin.LocalNotification;
+
 
 namespace Client
 {
@@ -30,6 +32,7 @@ namespace Client
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
+                .UseLocalNotification()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -48,6 +51,7 @@ namespace Client
             
             // Register Views
             RegisterViews(builder.Services);
+                
 
 #if DEBUG
             builder.Logging.AddDebug();
@@ -85,7 +89,7 @@ namespace Client
             services.AddSingleton<IMenuService, MenuService>();
             services.AddSingleton<IOrderService, OrderService>();
             services.AddSingleton<IReservationService, ReservationService>();
-            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<Shared.Services.Interfaces.INotificationService, NotificationService>();
             
             // SignalR
             services.AddSingleton<ISignalRService, SignalRService>();

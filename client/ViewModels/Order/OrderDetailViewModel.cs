@@ -5,6 +5,7 @@ using Shared.Constants;
 using Shared.Services.SignalR;
 using System.Collections.ObjectModel;
 using Client.Constants;
+using Plugin.LocalNotification;
 using Shared.Models.Order;
 using Shared.Services.Interfaces;
 
@@ -64,6 +65,22 @@ namespace Client.ViewModels.Order
         {
             if (e.OrderId == _orderId)
             {
+                // Notification locale
+                var request = new NotificationRequest
+                {
+                    NotificationId = new Random().Next(),
+                    Title = "Order Update",
+                    Description = $"Your order is now {e.Status}.",
+                    //ReturningData = "OrderDetail", 
+                    Schedule = new NotificationRequestSchedule
+                    {
+                        NotifyTime = DateTime.Now.AddSeconds(1) 
+                    }
+                };
+
+                LocalNotificationCenter.Current.Show(request);
+                
+                
                 // Update order status
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
